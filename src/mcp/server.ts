@@ -1,4 +1,4 @@
-// Minimal read-only MCP server (stdio, JSON-RPC 2.0) for desktop agents.
+// Minimal MCP server (stdio, JSON-RPC 2.0) for desktop agents.
 // It holds no database handle: every call goes to the local agent API with the
 // user's read-only token, so permissions are enforced in one place.
 import { readFileSync, existsSync } from "node:fs";
@@ -34,6 +34,26 @@ const TOOLS = [
     },
   },
   {
+    name: "hm_pick",
+    description: "Follow a PUBLIC person with a goal (building_with_ai, product_decisions, research, communication, market_policy). Starts verified identity resolution and research in the background. Do not use for private people (friends/family): use material the user supplies. Requires a keep-scoped token.",
+    inputSchema: { type: "object", properties: { name: { type: "string" }, goal: { type: "string" }, note: { type: "string" } }, required: ["name"], additionalProperties: false },
+  },
+  {
+    name: "hm_keep",
+    description: "Explicitly keep a lesson, correction, outcome or adopted mix for this user only (private GBrain brain, idempotent, read back before success). status: selected|tried|supported|inconclusive|rejected|superseded. Never changes the person's attributed evidence. Requires a keep-scoped token.",
+    inputSchema: {
+      type: "object",
+      properties: { content: { type: "string" }, person: { type: "string" }, status: { type: "string" }, idempotency_key: { type: "string" } },
+      required: ["content"],
+      additionalProperties: false,
+    },
+  },
+  {
+    name: "hm_list_keeps",
+    description: "List this user's kept lessons/outcomes (optionally filtered by words).",
+    inputSchema: { type: "object", properties: { q: { type: "string" } }, additionalProperties: false },
+  },
+  {
     name: "hm_get_evidence",
     description: "Original passages, speaker attribution and source URL/dates for one evidence item id.",
     inputSchema: { type: "object", properties: { item_id: { type: "string" } }, required: ["item_id"], additionalProperties: false },
@@ -45,13 +65,18 @@ function token(): string | null {
   return existsSync(f) ? readFileSync(f, "utf8").trim() : null;
 }
 
-async function api(path: string) {
+async function api(path: string, post?: Record<string, unknown>) {
   const t = token();
   if (!t) return { error: "No agent token. Run: bun run hm agent-token" };
   const base = process.env.HM_URL || `http://127.0.0.1:${config.port()}`;
   try {
-    const r = await fetch(base + path, { headers: { authorization: `Bearer ${t}` } });
+    const r = await fetch(base + path, {
+      method: post ? "POST" : "GET",
+      headers: { authorization: `Bearer ${t}`, ...(post ? { "content-type": "application/json" } : {}) },
+      ...(post ? { body: JSON.stringify(post) } : {}),
+    });
     const body = await r.json();
+    if (Array.isArray(body)) return { refreshed_at: new Date().toISOString(), http_status: r.status, items: body };
     return { refreshed_at: new Date().toISOString(), http_status: r.status, ...body };
   } catch (e) {
     return { error: `Human Machine API unreachable at ${base}: ${(e as Error).message}. Context NOT refreshed.` };
@@ -67,6 +92,12 @@ async function callTool(name: string, a: any) {
       return api(`/agent/v1/context?person=${q(a.person)}${a.goal ? `&goal=${q(a.goal)}` : ""}`);
     case "hm_changes_since":
       return api(`/agent/v1/changes?person=${q(a.person)}&since=${q(a.since)}`);
+    case "hm_pick":
+      return api("/agent/v1/pick", a);
+    case "hm_keep":
+      return api("/agent/v1/keep", a);
+    case "hm_list_keeps":
+      return api(`/agent/v1/keeps${a.q ? `?q=${q(a.q)}` : ""}`);
     case "hm_get_evidence":
       return api(`/agent/v1/evidence/${q(a.item_id)}`);
     default:

@@ -34,10 +34,15 @@ export function ensureUser(id = "local", name = "Local user") {
   return id;
 }
 
-export function createAgentToken(userId: string, label: string): string {
+export function createAgentToken(userId: string, label: string, write = false): string {
   const token = `hm_${randomToken(24)}`;
-  getDb().query("INSERT INTO agent_tokens (token_hash, user_id, label, scope, created_at) VALUES (?, ?, ?, 'read', ?)").run(sha256(token), userId, label, now());
+  getDb().query("INSERT INTO agent_tokens (token_hash, user_id, label, scope, created_at) VALUES (?, ?, ?, ?, ?)").run(sha256(token), userId, label, write ? "read keep" : "read", now());
   return token;
+}
+
+export function tokenScope(token: string | null | undefined): string | null {
+  if (!token) return null;
+  return (getDb().query("SELECT scope FROM agent_tokens WHERE token_hash = ? AND revoked_at IS NULL").get(sha256(token)) as { scope: string } | null)?.scope ?? null;
 }
 
 export function userForToken(token: string | null | undefined): string | null {
@@ -264,4 +269,37 @@ export function evidenceById(personId: string | null, itemId: string) {
     .get(itemId) as any;
   if (!it || (personId && it.person_id !== personId)) return null;
   return { ...it, passages: db.query("SELECT id, locator, speaker, speaker_is_subject, text FROM passages WHERE item_id = ? AND version = ?").all(itemId, it.current_version) };
+}
+
+// --- Agent write operations (token scope "keep") ----------------------------
+// Keep: an explicit, private, idempotent note for this user (lesson, correction,
+// outcome, adopted mix). Never changes public evidence or attributed rules.
+export async function agentKeep(userId: string, b: Record<string, unknown>) {
+  const { storeKeep } = await import("./qm.ts");
+  const person = b.person ? String(b.person) : null;
+  const status = b.status ? String(b.status) : "selected";
+  const content = [person ? `[${person}]` : "", `[${status}]`, String(b.content ?? "")].filter(Boolean).join(" ");
+  return storeKeep(`user:${userId}`, `private:${userId}` as any, { content, idempotency_key: b.idempotency_key, source: String(b.source ?? "desktop-agent") });
+}
+
+export function agentListKeeps(userId: string, q?: string) {
+  const words = (q ?? "").toLowerCase().split(/\W+/).filter((w) => w.length > 3).slice(0, 5);
+  return getDb()
+    .query(`SELECT id, content, created_at, gbrain_slug FROM keeps WHERE user_ns = ? ${words.length ? `AND (${words.map(() => "lower(content) LIKE ?").join(" OR ")})` : ""} ORDER BY created_at DESC LIMIT 50`)
+    .all(`user:${userId}`, ...words.map((w) => `%${w}%`));
+}
+
+// Pick: follow a person (public figure) with a goal; starts identity resolution
+// and research if needed. Private people (friends, family) are NOT researched:
+// use material the user supplies instead.
+export function agentPick(userId: string, b: Record<string, unknown>) {
+  const name = String(b.name ?? "").trim();
+  if (name.length < 2 || name.length > 120) throw new Error("name required");
+  const goal = (b.goal ? String(b.goal) : "building_with_ai") as Goal;
+  GoalSchema.parse(goal);
+  const existing = getDb().query("SELECT id, research_status FROM persons WHERE lower(name) = lower(?)").get(name) as any;
+  const id = existing && existing.research_status !== "not_started" ? existing.id : startResearch(name);
+  follow(userId, id, goal, b.note ? String(b.note) : null);
+  const p = getDb().query("SELECT id, name, research_status, identity_status FROM persons WHERE id = ?").get(id);
+  return { person: p, goal, note: "Research runs in the background worker; call hm_get_context later for evidence. Identity is verified before collection." };
 }
