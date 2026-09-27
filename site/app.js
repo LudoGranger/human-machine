@@ -116,6 +116,13 @@
       previewPrompt();
     }
   });
+  const filmDialog = document.querySelector('#film-dialog');
+  const launchFilm = document.querySelector('#launch-film');
+  document.querySelector('#watch-film').addEventListener('click', () => {
+    filmDialog.showModal();
+    launchFilm.play().catch(() => { /* Native controls remain available if playback is blocked. */ });
+  });
+  filmDialog.addEventListener('close', () => launchFilm.pause());
   document.querySelector('#about-button').addEventListener('click', () => document.querySelector('#about-dialog').showModal());
   document.querySelectorAll('dialog').forEach(dialog => {
     dialog.querySelector('.close-dialog').addEventListener('click', () => dialog.close());
