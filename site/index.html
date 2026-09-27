@@ -10,15 +10,18 @@
   <title>Human Machine</title>
   <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/marker.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="style.css?v=20260927-screen">
+  <link rel="stylesheet" href="style.css?v=20260927-film">
   <script src="skill-data.js?v=20260927-connected" defer></script>
-  <script src="app.js?v=20260927-screen" defer></script>
+  <script src="app.js?v=20260927-film" defer></script>
 </head>
 <body>
   <header class="topbar"><a href="https://github.com/LudoGranger/human-machine" target="_blank" rel="noreferrer">GitHub ↗</a></header>
   <main>
     <div class="main-copy">
-      <h1 class="wordmark" aria-label="Human Machine"><span>human</span><span>machine</span></h1>
+      <div class="brand-lockup">
+        <h1 class="wordmark" aria-label="Human Machine"><span>human</span><span>machine</span></h1>
+        <button id="watch-film" class="watch-film" type="button" aria-label="Watch the launch film" aria-haspopup="dialog"><svg width="9" height="11" viewBox="0 0 9 11" aria-hidden="true"><path d="M1 1.2v8.6L8 5.5z" fill="currentColor"/></svg></button>
+      </div>
       <p class="intro">Build an evolving version of yourself,<br>shaped by the humans you pick.</p>
       <section class="start" aria-label="Work with your human team">
         <div class="prompt-box">
@@ -45,6 +48,12 @@
     </section>
   </main>
   <footer><a href="human-machine-skills.zip" download>Skills ↓</a><button id="about-button">About</button></footer>
+  <dialog id="film-dialog" class="film-dialog" aria-labelledby="film-title">
+    <h2 id="film-title" class="sr-only">Human Machine launch film</h2>
+    <button class="close-dialog" type="button" aria-label="Close launch film">×</button>
+    <video id="launch-film" controls playsinline preload="none" poster="assets/launch-poster.png"><source src="assets/launch.mp4" type="video/mp4">Your browser does not support this video. <a href="assets/launch.mp4">Download the launch film.</a></video>
+    <div class="film-footer"><span>57 seconds</span><a href="https://github.com/LudoGranger/human-machine/blob/main/docs/LAUNCH.md" target="_blank" rel="noreferrer">Sources &amp; credits ↗</a></div>
+  </dialog>
   <dialog id="prompt-dialog" aria-labelledby="prompt-title"><button class="close-dialog" aria-label="Close prompt">×</button><h2 id="prompt-title">Your full prompt.</h2><p>Your work, your team, and the instructions your AI needs. This is exactly what Copy prompt copies.</p><textarea id="full-prompt" readonly rows="11" aria-label="Human Machine full prompt"></textarea></dialog>
   <dialog id="about-dialog" aria-labelledby="about-title"><button class="close-dialog" aria-label="Close about">×</button><h2 id="about-title">Human Machine.</h2><p>Learn from people, mix their ideas with your experience, and keep what helps.</p><p>The copied prompt brings your task and chosen perspectives into ChatGPT or Claude. Public sources support each perspective; people you know need material you provide. These are independent interpretations, without affiliation or endorsement.</p><p>In a regular chat, the workflow runs in that conversation. In Claude Code or Codex with project file access, the prompt also sets up the reusable skill. Your picks and draft stay in this browser until you copy them.</p><p>For ongoing source collection and memory, <a href="https://github.com/LudoGranger/human-machine#install" target="_blank" rel="noreferrer">run the local app ↗</a>. Research and memory depend on connected tools. Model and provider costs may apply. The code is MIT-licensed.</p><p class="fine-print">“Stocks” means researching public signals, not a promise of returns. Sam’s pixel portrait is adapted from a photograph by Steve Jennings/Getty Images for TechCrunch, cropped by James Tamim. <a href="https://commons.wikimedia.org/wiki/File:Sam_Altman_CropEdit_James_Tamim.jpg" target="_blank" rel="noreferrer">Source</a> · <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noreferrer">CC BY 2.0</a>.</p></dialog>
   <noscript><p class="no-script">Download the skills below, or enable JavaScript to build your prompt.</p></noscript>
