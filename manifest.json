@@ -1,0 +1,25 @@
+{
+  "name": "human-machine",
+  "version": "0.1.0",
+  "status": "agent-skill-pack",
+  "actions": [
+    "pick",
+    "catch-up",
+    "ask",
+    "compare",
+    "mix",
+    "keep"
+  ],
+  "supportsMultipleCoworkers": true,
+  "skills": [
+    "hm",
+    "human-machine",
+    "human-machine-pick",
+    "human-machine-catch-up",
+    "human-machine-ask",
+    "human-machine-compare",
+    "human-machine-mix",
+    "human-machine-keep"
+  ],
+  "primarySkill": "hm"
+}

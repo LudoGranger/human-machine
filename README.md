@@ -1,15 +1,16 @@
 # Human Machine
 
-**Own ~~Your~~ Their Intelligence**
+**Build an evolving version of yourself, shaped by the humans you pick.**
 
-Choose your human.
-Get their real-time thinking about the world to improve your daily outcomes with AI.
+Pick your humans. Start with **`/hm`** in Claude Code after installing the skill. Ask for feedback, compare alternatives, mix selected methods with your own experience, and keep what helps.
+
+The [website](https://ludogranger.github.io/human-machine/) gives you one setup prompt to copy into your AI. Pick several public figures, or bring your own material from a friend, parent or colleague. The conversational skill supports those private perspectives; the backend's automated research currently targets public figures. See [skill installation and supported hosts](docs/SKILLS.md).
 
 Human Machine follows what selected people publish, experiment with, change their minds about and put into practice, and turns relevant discoveries into improvements to your daily work with AI. It keeps four questions central: **What changed? Why does it matter to me? What can I try? Did it improve my work?**
 
 > “Thinking” here means an evidence-backed interpretation of public statements and actions. Human Machine never claims access to private thoughts and never implies that a person endorses you or this app.
 
-This repository currently holds the **backend**, which runs on your own computer: crawler workers, a durable job queue, [GBrain](https://github.com/garrytan/gbrain) memory, an HTTP API, a read-only agent API, an MCP server and an Agent Skills exporter. The web frontend and project website are built separately (see [COLLABORATION.md](COLLABORATION.md)) against [docs/API.md](docs/API.md).
+This repository includes the **local backend**, portable agent skills and the static project website. The backend provides crawler workers, a durable job queue, [GBrain](https://github.com/garrytan/gbrain) memory, an HTTP API, a read-only agent API, an MCP server and a person-specific skill exporter. The website creates setup prompts; it does not expose local runtime data. An application frontend can use [docs/API.md](docs/API.md).
 
 - Honest status of every integration: [STATUS.md](STATUS.md)
 - Backend API contract: [docs/API.md](docs/API.md)
@@ -17,6 +18,8 @@ This repository currently holds the **backend**, which runs on your own computer
 - Build timing and provenance: [BUILD_LOG.md](BUILD_LOG.md)
 
 ## Install
+
+For the lightweight skill only, use [the `/hm` setup guide](docs/SKILLS.md). The steps below install the local application with source collection and GBrain memory.
 
 Requirements: macOS or Linux, [Bun](https://bun.sh) ≥ 1.1, Git. (Windows: untested.)
 
@@ -132,11 +135,11 @@ Separate `GBRAIN_HOME` directories mean separate databases; tags are not used as
 
 ## Optional: always-on server
 
-See [docs/DEPLOY.md](docs/DEPLOY.md). GitHub Actions only runs tests; it does not run the backend.
+See [docs/DEPLOY.md](docs/DEPLOY.md). GitHub Actions runs tests and deploys the static website to GitHub Pages; it does not run the backend.
 
 ## Working with two agents
 
-The backend is built by Claude; the frontend, website and marketing by ChatGPT; both share one GBrain workspace. See [COLLABORATION.md](COLLABORATION.md).
+The backend is built by Claude; the frontend, website and marketing by ChatGPT. Code is shared through this repository; the proposed shared GBrain connection has not yet been verified by both agents. See [COLLABORATION.md](COLLABORATION.md).
 
 ## Rights
 

@@ -23,7 +23,13 @@ jobs:
         run: |
           bun install -g github:garrytan/gbrain
           echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
-      - run: bun test
+      - run: bun test ./test
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test tests/install.test.mjs
+      - name: Package website skill download
+        run: python3 scripts/package-site.py
       - name: Secret hygiene
         run: |
           ! git ls-files | grep -E '(^|/)\.env$|\.sqlite$|\.pglite|agent-token'

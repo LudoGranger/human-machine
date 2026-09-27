@@ -40,3 +40,10 @@ Human Machine's own code is MIT-licensed (see LICENSE). It depends on the packag
 ## Collected content is not covered by these licenses
 
 Software licenses do not grant rights to collected material. Posts, articles, transcripts, commits, books and other sources remain the property of their authors and publishers. Human Machine stores short excerpts with attribution for analysis on your own computer, respects provider terms and deletions, and does not publish collected content in this repository.
+# Website typography
+
+Permanent Marker by Font Diner is bundled in `site/assets/marker.ttf` under the Apache License 2.0. The license is included at `site/assets/MARKER-LICENSE.txt`.
+
+## Sam Altman photograph
+
+`site/assets/sam-altman.jpg`: Steve Jennings/Getty Images for TechCrunch, crop by James Tamim. [Source](https://commons.wikimedia.org/wiki/File:Sam_Altman_CropEdit_James_Tamim.jpg), [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/). The source thumbnail is unchanged; CSS displays it cropped and in grayscale. This photograph is not included under the repository's MIT license.
