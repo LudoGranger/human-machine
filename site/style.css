@@ -6,15 +6,21 @@
 @media(max-width:359px){.human-list{grid-template-columns:1fr}.human{padding-block:8px}.human-name{font-size:11px}.human-topic{font-size:10px}.intro{font-size:14px}.custom-form{display:block}.custom-input{margin-top:8px}.custom-input input{width:100%}.custom-input button{margin-left:auto}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
 
-/* The people occupy the left half; the quiet working area sits to the right. */
-main{width:1060px;max-width:calc(100% - 12vw);display:grid;grid-template-columns:minmax(0,1fr) 440px;gap:100px;align-items:center}
-.main-copy{min-width:0}
-.portraits{position:relative;width:350px;height:455px;max-width:100%;margin:0 auto;mix-blend-mode:multiply}
-.portrait{position:absolute;display:block;width:108px;height:180px;background-image:url('assets/humans.png');background-size:500% 100%;background-repeat:no-repeat}
-.portrait-garry{left:17px;top:12px;background-position:0% 0;transform:rotate(-8deg)}
-.portrait-brian{right:0;top:39px;background-position:25% 0;transform:rotate(6deg)}
-.portrait-sam{left:116px;top:157px;background-position:50% 0;transform:rotate(-2deg);z-index:1}
-.portrait-mark{left:0;bottom:0;background-position:75% 0;transform:rotate(-5deg)}
-.portrait-donald{right:9px;bottom:2px;background-position:100% 0;transform:rotate(7deg)}
-@media(max-width:1100px) and (min-width:861px){main{gap:55px;grid-template-columns:minmax(0,1fr) 400px}.portraits{width:270px;height:410px}.portrait{width:90px;height:150px}.portrait-sam{left:90px;top:137px}}
-@media(max-width:860px){main{width:440px;max-width:calc(100% - 48px);grid-template-columns:minmax(0,1fr);gap:32px;padding-top:50px;padding-bottom:50px}.portraits{display:flex;justify-content:space-between;align-items:center;width:100%;height:100px;margin:0}.portrait{position:relative;inset:auto;width:54px;height:90px;flex-shrink:0}.portrait-sam{transform:rotate(-2deg)}.portrait-brian,.portrait-donald{top:6px}.wordmark{margin-bottom:30px}}
+/* Portraits belong to the picker; the full working area sits to the right. */
+main{width:1060px;max-width:calc(100% - 12vw);padding-top:42px;padding-bottom:42px}
+.main-copy{width:440px;max-width:100%;margin-left:auto}
+.wordmark{margin-bottom:28px}
+.human-list{row-gap:5px}
+.human{min-height:56px;padding:6px 0;gap:11px}
+.human-copy{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:3px}
+.human-topic:before{content:none}
+.human-portrait,.anyone-portrait{display:block;flex:0 0 38px;width:38px;height:44px}
+.human-portrait{background-image:url('assets/humans.png');background-repeat:no-repeat;background-size:500% auto;mix-blend-mode:multiply;opacity:.88}
+.portrait-garry{background-position:0 0}.portrait-brian{background-position:25% 0}.portrait-mark{background-position:75% 0}.portrait-donald{background-position:100% 0}
+.portrait-sam{background-image:url('assets/sam-altman.jpg');background-size:cover;background-position:center;filter:grayscale(1);border-radius:2px}
+.portrait-barack,.portrait-andrej{background-image:url('assets/humans-obama-karpathy.png');background-size:200% auto;background-position-y:center}
+.portrait-barack{background-position-x:0}.portrait-andrej{background-position-x:100%}
+.anyone-portrait{display:grid;place-items:center;font:20px var(--mono);color:#b1b1a6;border:1px dashed #d6d6cb}
+.human:hover .human-portrait,.human[aria-pressed=true] .human-portrait{opacity:1}
+@media(max-width:860px){main{width:440px;max-width:calc(100% - 48px);padding-top:48px;padding-bottom:42px}.main-copy{margin:0}.human{gap:9px}}
+@media(max-width:520px){.human-list{column-gap:18px}.human-portrait,.anyone-portrait{flex-basis:31px;width:31px;height:37px}.human{min-height:51px;gap:8px}.human-copy{gap:3px}.human-name{font-size:10px}.human-topic{font-size:9px}.wordmark{margin-bottom:28px}}

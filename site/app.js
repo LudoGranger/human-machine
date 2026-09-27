@@ -5,7 +5,9 @@
     { id: 'garry', name: 'Garry Tan', topic: 'Startups', role: 'startup building and AI workflows', source: 'https://github.com/garrytan/gstack' },
     { id: 'donald', name: 'Donald Trump', topic: 'Stocks', role: 'researching how public policy signals relate to my stock-market thesis; distinguish rhetoric from enacted policy, examine counterevidence, and never infer private intentions or promise investment returns', source: 'https://www.whitehouse.gov/presidential-actions/' },
     { id: 'andrej', name: 'Andrej Karpathy', topic: 'AI', role: 'AI experimentation', source: 'https://github.com/karpathy/autoresearch' },
-    { id: 'mark', name: 'Mark Pincus', topic: 'Product', role: 'product learning; ask for the passage I want to use if discussing a book', source: 'https://www.lifeatthespeedofplay.com/' }
+    { id: 'sam', name: 'Sam Altman', topic: 'Strategy', role: 'company building and AI strategy', source: 'https://blog.samaltman.com/' },
+    { id: 'mark', name: 'Mark Pincus', topic: 'Product', role: 'product learning; ask for the passage I want to use if discussing a book', source: 'https://www.lifeatthespeedofplay.com/' },
+    { id: 'barack', name: 'Barack Obama', topic: 'Leadership', role: 'leadership and clear communication', source: 'https://www.obama.org/' }
   ];
   const storageKey = 'human-machine-picks-v2';
   const legacyKey = 'human-machine-crew-v1';
@@ -57,6 +59,7 @@
   function makePerson(h, isCustom = false) {
     const button = document.createElement('button');
     button.type = 'button'; button.className = isCustom ? 'custom-human' : 'human'; button.dataset.person = h.id;
+    if (!isCustom) { const portrait = document.createElement('span'); portrait.className = `human-portrait portrait-${h.id}`; portrait.setAttribute('aria-hidden', 'true'); button.append(portrait); }
     const label = document.createElement('span'); label.className = 'human-copy';
     const name = document.createElement('span'); name.className = 'human-name'; name.textContent = h.name; label.append(name);
     if (h.topic) { const topic = document.createElement('span'); topic.className = 'human-topic'; topic.textContent = h.topic; label.append(topic); }
@@ -67,7 +70,7 @@
   humans.forEach(h => list.append(makePerson(h)));
   const anyone = document.createElement('button');
   anyone.type = 'button'; anyone.className = 'human anyone'; anyone.setAttribute('aria-label', 'Pick any human');
-  anyone.innerHTML = '<span class="human-copy"><span class="human-name">Pick anyone</span></span><span class="human-mark" aria-hidden="true">↗</span>';
+  anyone.innerHTML = '<span class="anyone-portrait" aria-hidden="true">+</span><span class="human-copy"><span class="human-name">Pick anyone</span><span class="human-topic">Your inspiration</span></span><span class="human-mark" aria-hidden="true">↗</span>';
   anyone.addEventListener('click', () => input.focus()); list.append(anyone);
   custom.forEach(h => customList.append(makePerson(h, true)));
   form.addEventListener('submit', event => {
