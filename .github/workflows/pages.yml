@@ -2,7 +2,7 @@ name: Pages
 on:
   push:
     branches: [main]
-    paths: ["site/**", "docs/**", ".github/workflows/pages.yml"]
+    paths: ["site/**", "skills/**", "docs/**", "scripts/install.mjs", "scripts/package-site.py", "manifest.json", ".github/workflows/pages.yml"]
   workflow_dispatch:
 permissions:
   contents: read
@@ -22,8 +22,10 @@ jobs:
       - uses: actions/checkout@v4
       - name: Assemble static site (no collected data, no secrets)
         run: |
+          python3 scripts/package-site.py
           mkdir -p _site/docs
-          cp site/index.html _site/
+          cp site/index.html site/style.css site/app.js site/skill-data.js site/human-machine-skills.zip _site/
+          cp -R site/assets _site/assets
           cp docs/*.md _site/docs/
           touch _site/.nojekyll
       - uses: actions/configure-pages@v5

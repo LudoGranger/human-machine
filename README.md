@@ -1,9 +1,10 @@
 # Human Machine
 
-**Own ~~Your~~ Their Intelligence**
+**Build an evolving version of yourself, shaped by the humans you pick.**
 
-Choose your human.
-Get their real-time thinking about the world to improve your daily outcomes with AI.
+Pick your humans. Start with **`/hm`** in Claude Code after installing the skill. Ask for feedback, compare alternatives, mix selected methods with your own experience, and keep what helps.
+
+The [website](https://ludogranger.github.io/human-machine/) gives you one setup prompt to copy into your AI. Pick several public figures, or bring your own material from a friend, parent or colleague. The conversational skill supports those private perspectives; the backend's automated research currently targets public figures. See [skill installation and supported hosts](docs/SKILLS.md).
 
 Human Machine follows what selected people publish, experiment with, change their minds about and put into practice, and turns relevant discoveries into improvements to your daily work with AI. It keeps four questions central: **What changed? Why does it matter to me? What can I try? Did it improve my work?**
 
@@ -18,6 +19,8 @@ It is open source (MIT) and runs on your own computer: crawler workers, a durabl
 - Build timing and provenance: [BUILD_LOG.md](BUILD_LOG.md)
 
 ## Install
+
+For the lightweight skill only, use [the `/hm` setup guide](docs/SKILLS.md). The steps below install the local application with source collection and GBrain memory.
 
 Requirements: macOS or Linux, [Bun](https://bun.sh) ≥ 1.1, Git. (Windows: untested.)
 

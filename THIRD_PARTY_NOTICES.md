@@ -40,3 +40,6 @@ Human Machine's own code is MIT-licensed (see LICENSE). It depends on the packag
 ## Collected content is not covered by these licenses
 
 Software licenses do not grant rights to collected material. Posts, articles, transcripts, commits, books and other sources remain the property of their authors and publishers. Human Machine stores short excerpts with attribution for analysis on your own computer, respects provider terms and deletions, and does not publish collected content in this repository.
+# Website typography
+
+Permanent Marker by Font Diner is bundled in `site/assets/marker.ttf` under the Apache License 2.0. The license is included at `site/assets/MARKER-LICENSE.txt`.

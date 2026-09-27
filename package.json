@@ -14,7 +14,9 @@
     "hm": "bun run src/cli.ts",
     "test": "bun test",
     "typecheck": "tsc --noEmit",
-    "site": "bun run scripts/build-site.ts"
+    "site": "python3 scripts/package-site.py",
+    "install:skills": "node scripts/install.mjs",
+    "test:skills": "node --test tests/install.test.mjs"
   },
   "engines": {
     "bun": ">=1.1"

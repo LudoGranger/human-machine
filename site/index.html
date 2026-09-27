@@ -3,83 +3,56 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#faf9f6">
+  <meta name="description" content="Build an evolving version of yourself, shaped by the humans you pick. Copy a prompt into your AI and get started.">
+  <meta property="og:title" content="Human Machine">
+  <meta property="og:description" content="Build an evolving version of yourself, shaped by the humans you pick.">
   <title>Human Machine</title>
-  <meta name="description" content="Choose your human. Get their real-time thinking about the world to improve your daily outcomes with AI. Open source; runs on your computer.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@400;500;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
-  <style>
-    :root { --bg:#fbfaf7; --ink:#141414; --muted:#6b6b66; --line:#e6e3dc; --panel:#fff; --accent:#1f4fd6; --strike:#b3261e; --soft:#f3f1ec; }
-    @media (prefers-color-scheme: dark) { :root { --bg:#111110; --ink:#efede8; --muted:#a09d96; --line:#2c2b29; --panel:#1a1a19; --accent:#8fb0ff; --strike:#ff8b80; --soft:#222220; } }
-    * { box-sizing: border-box; } body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.6 Inter, system-ui, sans-serif; }
-    main { max-width: 980px; margin: 0 auto; padding: 0 20px 64px; }
-    a { color: var(--accent); }
-    .hero { text-align:center; padding: 80px 0 40px; }
-    h1 { font-family:"Instrument Serif", Georgia, serif; font-weight:400; font-size:clamp(52px,10vw,110px); line-height:.95; margin:0 0 16px; }
-    .tag { font-family:"Instrument Serif", Georgia, serif; font-size:clamp(28px,5vw,50px); margin:0 0 20px; }
-    .tag s { color:var(--muted); text-decoration-color:var(--strike); text-decoration-thickness:3px; }
-    .choose { font-weight:600; font-size:22px; margin:0; } .sub { color:var(--muted); font-size:19px; max-width:640px; margin:6px auto 28px; }
-    .cta { display:inline-block; background:var(--ink); color:var(--bg); padding:12px 20px; border-radius:10px; text-decoration:none; font-weight:500; margin:4px; }
-    .cta.ghost { background:transparent; color:var(--ink); border:1px solid var(--line); }
-    h2 { font-family:"Instrument Serif", Georgia, serif; font-weight:400; font-size:34px; margin:48px 0 8px; }
-    .q { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; } .q div { border-top:2px solid var(--ink); padding-top:8px; font-family:"Instrument Serif", Georgia, serif; font-size:22px; }
-    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; }
-    .card { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:16px; }
-    .card b { font-family:"Instrument Serif", Georgia, serif; font-weight:400; font-size:24px; display:block; }
-    pre { background:var(--soft); padding:14px; border-radius:10px; overflow-x:auto; font:13px/1.5 "JetBrains Mono", monospace; }
-    table { width:100%; border-collapse:collapse; font-size:14px; } td, th { text-align:left; padding:8px; border-bottom:1px solid var(--line); vertical-align:top; }
-    .muted { color:var(--muted); font-size:14px; }
-    footer { border-top:1px solid var(--line); padding:24px 20px; color:var(--muted); font-size:13px; max-width:980px; margin:0 auto; }
-    @media (max-width:700px) { .q { grid-template-columns:1fr 1fr; } }
-  </style>
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="preload" href="assets/marker.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="style.css">
+  <script src="skill-data.js" defer></script>
+  <script src="app.js" defer></script>
 </head>
 <body>
-<main>
-  <section class="hero">
-    <h1>Human Machine</h1>
-    <p class="tag">Own <s>Your</s> Their Intelligence</p>
-    <p class="choose">Choose your human.</p>
-    <p class="sub">Get their real-time thinking about the world to improve your daily outcomes with AI.</p>
-    <a class="cta" href="https://github.com/LudoGranger/human-machine#install">Install locally</a>
-    <a class="cta ghost" href="https://github.com/LudoGranger/human-machine">Source on GitHub</a>
-  </section>
+  <header class="topbar"><span>Independent intelligence.</span><a href="https://github.com/LudoGranger/human-machine" target="_blank" rel="noreferrer">GitHub ↗</a></header>
+  <main>
+    <figure class="portraits" aria-label="Pixel illustrations of Garry Tan, Brian Chesky, Sam Altman, Mark Pincus and Donald Trump">
+      <span class="portrait portrait-garry" aria-hidden="true"></span>
+      <span class="portrait portrait-brian" aria-hidden="true"></span>
+      <span class="portrait portrait-sam" aria-hidden="true"></span>
+      <span class="portrait portrait-mark" aria-hidden="true"></span>
+      <span class="portrait portrait-donald" aria-hidden="true"></span>
+    </figure>
+    <div class="main-copy">
+    <h1 class="wordmark" aria-label="Human Machine"><span>human</span><span>machine</span></h1>
+    <p class="intro">Build an evolving version of yourself,<br>shaped by the humans you pick.</p>
 
-  <div class="q"><div>What changed?</div><div>Why does it matter to me?</div><div>What can I try?</div><div>Did it improve my work?</div></div>
+    <section class="start" aria-label="Start Human Machine">
+      <p class="instruction">Copy into your AI. Start with /hm.</p>
+      <div class="prompt-box">
+        <code id="prompt-preview">/hm</code>
+        <button id="copy-prompt" aria-label="Copy Human Machine setup prompt" title="Copy setup prompt"><svg class="copy-icon" width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.3"/><path d="M12 4V3H3v9h1" stroke="currentColor" stroke-width="1.3"/></svg><span class="copy-label">Copy</span></button>
+      </div>
+      <p id="copy-status" class="copy-status" role="status" aria-live="polite"></p>
+    </section>
 
-  <h2>How it works</h2>
-  <p>Human Machine follows what a person publishes, experiments with, changes their mind about and puts into practice. It resolves who they are, collects their public sources with provenance and dates, detects meaningful changes, and turns relevant ones into bounded exercises and agent-skill updates you can test. Everything runs on your own computer; memory lives in <a href="https://github.com/garrytan/gbrain">GBrain</a>.</p>
-  <p class="muted">“Thinking” means an evidence-backed interpretation of public statements and actions — never private thoughts, and never an endorsement by the person.</p>
+    <section class="humans" aria-labelledby="pick-title">
+      <h2 id="pick-title">Pick your humans.</h2>
+      <div class="human-list" id="human-list"></div>
+      <form id="custom-form" class="custom-form">
+        <label for="custom-name">Anyone. Your friend. Your father.</label>
+        <div class="custom-input"><input id="custom-name" name="name" placeholder="Add a name…" aria-label="Name of any human you want to learn from" maxlength="80" autocomplete="off" required><button type="submit" aria-label="Add this human">↵</button></div>
+      </form>
+      <div id="custom-humans" class="custom-humans" aria-label="People you added"></div>
+      <p id="custom-status" class="sr-only" role="status"></p>
+    </section>
+    </div>
+  </main>
+  <footer><span>Free & open source.</span><div><a href="human-machine-skills.zip" download>Get the skills ↓</a><button id="about-button">About</button></div></footer>
 
-  <h2>Featured examples</h2>
-  <p class="muted">Examples, not a popularity ranking. This website holds no collected data: research status exists only in your local install.</p>
-  <div class="grid">
-    <div class="card"><b>Garry Tan</b><span class="muted">First complete demonstration: GitHub, blog, YouTube, podcasts, news</span></div>
-    <div class="card"><b>Donald Trump</b><span class="muted">Policy domain test: official presidential documents</span></div>
-    <div class="card"><b>Sam Altman</b><span class="muted">Not researched in the demo</span></div>
-    <div class="card"><b>Brian Chesky</b><span class="muted">Not researched in the demo</span></div>
-    <div class="card"><b>Barack Obama</b><span class="muted">Not researched in the demo</span></div>
-    <div class="card"><b>Anyone else</b><span class="muted">Enter a name; the same pipeline resolves identity first</span></div>
-  </div>
-
-  <h2 id="install">Install</h2>
-  <pre>curl -fsSL https://bun.sh/install | bash
-bun install -g github:garrytan/gbrain
-git clone https://github.com/LudoGranger/human-machine && cd human-machine
-bun install
-bun run hm init
-bun run hm serve          # http://127.0.0.1:4747</pre>
-
-  <h2>What is free</h2>
-  <table>
-    <tr><th>Component</th><th>Cost</th></tr>
-    <tr><td>App, worker, GBrain (local PGLite), GitHub/blog/YouTube/podcast/news/books/Federal Register sources</td><td>Free</td></tr>
-    <tr><td>Analysis model</td><td>Your Anthropic API key (paid per use) or your Claude Code plan</td></tr>
-    <tr><td>X posts</td><td>X API access is paid; without it X shows “Access required”</td></tr>
-    <tr><td>Always-on server (optional)</td><td>Any small VPS; not GitHub Pages or Actions</td></tr>
-  </table>
-
-  <h2>Desktop agents</h2>
-  <p>Export an <a href="https://agentskills.io/specification">Agent Skills</a> package with a refresh script that fetches dated, current context from your local install, or connect over MCP. Tested with Claude Code on macOS; other clients untested.</p>
-</main>
-<footer>MIT-licensed software. Collected content belongs to its authors. This page is static and collects nothing.</footer>
+  <dialog id="prompt-dialog" aria-labelledby="prompt-title"><button class="close-dialog" aria-label="Close prompt">×</button><h2 id="prompt-title">Your prompt.</h2><p>Copy this text, then paste it into your AI.</p><textarea id="full-prompt" readonly rows="11" aria-label="Human Machine starter prompt"></textarea></dialog>
+  <dialog id="about-dialog" aria-labelledby="about-title"><button class="close-dialog" aria-label="Close about">×</button><h2 id="about-title">Human Machine.</h2><p>Open-source skills for learning from people, mixing their ideas with your experience, and keeping what helps.</p><p>Pick anyone. For public figures, your AI checks public sources. For people you know, bring the words, notes or lessons you’re comfortable sharing.</p><p>Copy installs the skill when your AI has project file access, or starts the workflow in a regular chat. Your picks stay on this browser until you copy them into your AI.</p><p>For ongoing source collection and GBrain memory, <a href="https://github.com/LudoGranger/human-machine#install" target="_blank" rel="noreferrer">run the local app ↗</a>. Research and memory depend on your connected tools. Model and provider costs may apply.</p><p class="fine-print">Independent interpretations, without affiliation or endorsement. “Stocks” means researching public signals, not a promise of returns.</p></dialog>
+  <noscript><p class="no-script">Download the skill pack below, or enable JavaScript to copy a personalized prompt.</p></noscript>
 </body>
 </html>
