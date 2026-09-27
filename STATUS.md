@@ -1,4 +1,32 @@
-# Status — what is live, verified, blocked or unfinished
+# Status — what works, what doesn't (backend, verified 2026-09-27 16:00 PT)
+
+## The six `/hm` commands (ChatGPT's skill + Claude's backend)
+
+| Command | Works? | Backend piece | Verified how |
+|---|---|---|---|
+| `/hm pick <person>` | ✅ public figures | MCP `hm_pick` → identity check → research in background | 34 tests; live research of Garry Tan & Donald Trump |
+| `/hm latest` (catch up) | ✅ | `hm_get_context`, `hm_changes_since` (dated, cited, GBrain retrieval) | Fresh Claude Code session ran `/hm latest on Garry Tan` end to end |
+| `/hm ask` | ✅ | `hm_get_context` + `hm_get_evidence` | Uses the same verified read tools |
+| `/hm compare` | ✅ | read tools per person; comparison done by the agent | Not separately demoed |
+| `/hm mix` | ✅ | read tools per person; mix written by the agent | Not separately demoed |
+| `/hm keep` | ✅ | MCP `hm_keep` → private GBrain brain, idempotent, **read back** | Same Claude Code session kept `keep_00eb4e785d50fed8`, read back = true |
+| Private people (friend, parent) | ⚠️ skill only | No automated research by design; user supplies material | — |
+
+Setup for Claude Code: `bun run hm serve`, `bun run hm agent-token --write`, install the skills, then `claude mcp add human-machine -- bun run <repo>/src/cli.ts mcp`.
+
+## Hackathon goal: "Extend QM and GBrain"
+
+| Integration | Works? | Evidence |
+|---|---|---|
+| GBrain (core memory) | ✅ | ~420 public, 115 app, private pages; every card and `/hm` answer retrieves through GBrain |
+| QM memory provider (`/token` + `/mcp`: `hm_recall`, `hm_keep`) | ✅ against QM's own client code | `scripts/verify-qm.ts` — 6/6 checks. ❌ not yet run inside a deployed QM (Slack/web) |
+| YC CLI → Bookface (restricted) | ✅ | 10 of Garry Tan's own Bookface posts; private only, never exported |
+| Hosted GBrain workspace (gbrain.io) | ❌ | Waiting for the workspace access token |
+| X / LinkedIn / video transcripts | ❌ | Paid token / no authorized API / publisher permission needed |
+
+---
+
+# Details
 
 Snapshot from the build machine, 2026-09-27 (UTC evening). Numbers come from the local database, not estimates.
 
