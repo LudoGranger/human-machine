@@ -279,5 +279,7 @@ export function quoteUntrusted(s: string): string {
 
 export function yamlStr(s: string | null | undefined): string {
   if (s === null || s === undefined) return "null";
-  return JSON.stringify(String(s));
+  // Lone surrogates / control chars become \uXXXX escapes that YAML rejects.
+  const clean = String(s).toWellFormed().replace(/[\u0000-\u0008\u000b-\u001f\u007f\u2028\u2029]/g, " ");
+  return JSON.stringify(clean);
 }
