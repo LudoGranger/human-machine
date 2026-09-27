@@ -22,7 +22,8 @@ Setup for Claude Code: `bun run hm serve`, `bun run hm agent-token --write`, ins
 | QM memory provider (`/token` + `/mcp`: `hm_recall`, `hm_keep`) | ✅ against QM's own client code | `scripts/verify-qm.ts` — 6/6 checks. ❌ not yet run inside a deployed QM (Slack/web) |
 | YC CLI → Bookface (restricted) | ✅ | 10 of Garry Tan's own Bookface posts; private only, never exported |
 | Hosted GBrain workspace (gbrain.io) | ❌ | Waiting for the workspace access token |
-| X / LinkedIn / video transcripts | ❌ | Paid token / no authorized API / publisher permission needed |
+| X (official API v2, pay-per-use) | ✅ | 200 @garrytan + 100 @realDonaldTrump posts collected; reposts stored but not treated as statements; posts older than 30 days marked historical. Filtered stream not enabled (polling) |
+| LinkedIn / video transcripts | ❌ | No authorized API / publisher permission needed |
 
 ---
 
