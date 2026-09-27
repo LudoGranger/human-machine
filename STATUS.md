@@ -33,6 +33,8 @@ Snapshot from the build machine, 2026-09-27 (UTC evening). Numbers come from the
 | Local GBrain (3 layers) | ✅ | ✅ | Separate PGLite brains; isolation tested with the real CLI |
 | Hosted GBrain workspace (gbrain.io) | ✅ (MCP HTTP client + `hm collab`) | ❌ | Waiting for the workspace access token; not yet exercised |
 | Agent API / MCP | ✅ | ✅ | MCP tested over stdio JSON-RPC; not yet inside a Claude Code MCP session |
+| **QM memory provider** (`/token` + `/mcp`: `hm_recall`, `hm_keep`) | ✅ | ✅ with QM's own client code | `scripts/verify-qm.ts` imports QM's `mcp-client.ts` + `mcp-memory-provider.ts`: cited GBrain recall, idempotent private keep with read-back, per-user isolation, read-only and bad-secret rejection. **Not yet run inside a deployed QM** (Slack/web) — see docs/QM-PROVIDER.md |
+| **YC Bookface** (via YC CLI login) | ✅ | ✅ | 10 of Garry Tan's own posts collected (author-filtered; mentions skipped). **Restricted**: private brain only; excluded from public GBrain, skill export, QM recall and shared pages. Bookface text is sent to your configured analysis model |
 
 ## The measured experiment (honest reading)
 

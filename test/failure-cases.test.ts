@@ -167,6 +167,26 @@ describe("duplicates and republished content", () => {
   });
 });
 
+describe("restricted sources (YC Bookface)", () => {
+  test("Bookface CSV parsing keeps quoted newlines and only the person's own posts are collected", async () => {
+    const { parseCsv } = await import("../src/adapters/bookface.ts");
+    const rows = parseCsv('id,item_type,posted_at,link,body,user.link,user.company.link\n1,Post,2026-09-14T20:46:00Z,"[Title](https://bookface.ycombinator.com/posts/1)","line one\n\nline ""two""",[Ada Test](https://bookface.ycombinator.com/user/9),[Co](https://bookface.ycombinator.com/company/2)\n');
+    expect(rows.length).toBe(1);
+    expect(rows[0].body).toContain('line "two"');
+  });
+  test("restricted items are flagged and excluded from shared views", () => {
+    const o = storeItem(mkSource("s-bf", "bookface"), item({ externalId: "bf1", url: "https://bookface.ycombinator.com/posts/1", raw: { restricted: true } }));
+    const db = getDb();
+    expect((db.query("SELECT restricted FROM items WHERE id = ?").get(o.itemId) as any).restricted).toBe(1);
+    db.query("INSERT INTO change_events (id, person_id, item_id, classification, summary, passage_ids, analyzed_at, created_at) VALUES ('e_bf', 'ada-test', ?, 'new_topic', 'confidential', ?, ?, ?)").run(
+      o.itemId, JSON.stringify([`${o.itemId}#v1#1`]), new Date().toISOString(), new Date().toISOString(),
+    );
+    const since = new Date(Date.now() - 3600_000).toISOString();
+    expect(app.recentChanges("ada-test", since, 50, true).some((c: any) => c.id === "e_bf")).toBe(true);
+    expect(app.recentChanges("ada-test", since, 50, false).some((c: any) => c.id === "e_bf")).toBe(false);
+  });
+});
+
 describe("hostile bytes", () => {
   test("NUL characters in source text are removed before storage (Postgres/PGLite reject them)", () => {
     const o = storeItem(mkSource("s-nul"), item({ externalId: "nul", url: "https://example.com/nul", passages: [{ locator: "p", text: "Section 1.\u0000 Policy text that is long enough to analyze here.", speaker: "Ada Test", speakerIsSubject: true }] }));

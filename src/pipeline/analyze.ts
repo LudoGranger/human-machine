@@ -142,6 +142,7 @@ ${material}
           claimId, person.id, c.topic, c.kind, c.statement, date, date, ts, ts,
         );
         db.query("INSERT INTO claim_history (claim_id, version, statement, status, recorded_at) VALUES (?, 1, ?, 'provisional', ?)").run(claimId, c.statement, ts);
+        if (item.restricted) db.query("UPDATE claims SET restricted = 1 WHERE id = ?").run(claimId);
         nClaims++;
       } else {
         const cur = db.query("SELECT * FROM claims WHERE id = ?").get(claimId) as any;
@@ -199,6 +200,7 @@ ${material}
         ruleId, person.id, r.attribution, JSON.stringify(data), ts, ts,
       );
       for (const id of ids) db.query("INSERT OR IGNORE INTO rule_evidence (rule_id, passage_id, relation) VALUES (?, ?, 'supports')").run(ruleId, id);
+      if (item.restricted && !similar) db.query("UPDATE rules SET restricted = 1 WHERE id = ?").run(ruleId);
       nRules++;
     }
     db.query("UPDATE items SET analysis_status = 'done', analyzed_at = ?, analysis_note = ?, injection_flag = ? WHERE id = ?").run(

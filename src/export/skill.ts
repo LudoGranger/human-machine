@@ -55,7 +55,7 @@ function buildFiles(userId: string, personId: string) {
   const person = db.query("SELECT * FROM persons WHERE id = ?").get(personId) as any;
   if (!person) throw new Error("unknown person");
   const name = skillName(personId);
-  const rules = (db.query("SELECT * FROM rules WHERE person_id = ? AND status IN ('provisional','durable') ORDER BY status DESC, updated_at DESC").all(personId) as any[])
+  const rules = (db.query("SELECT * FROM rules WHERE person_id = ? AND restricted = 0 AND status IN ('provisional','durable') ORDER BY status DESC, updated_at DESC").all(personId) as any[])
     .map((r) => ({ ...r, data: JSON.parse(r.data) }))
     .filter((r) => !INJECTION.test(JSON.stringify(r.data)));
   const sources = db.query("SELECT label, adapter, status, last_success_at, coverage_gaps FROM sources WHERE person_id = ?").all(personId) as any[];
@@ -63,7 +63,7 @@ function buildFiles(userId: string, personId: string) {
     db
       .query(
         `SELECT p.locator, i.url, i.title, i.published_at, i.occurred_at, i.relation, i.extraction FROM rule_evidence re JOIN passages p ON p.id = re.passage_id
-         JOIN items i ON i.id = p.item_id WHERE re.rule_id = ? AND i.deleted_at IS NULL AND i.relation NOT IN ('upload','book')`,
+         JOIN items i ON i.id = p.item_id WHERE re.rule_id = ? AND i.deleted_at IS NULL AND i.restricted = 0 AND i.relation NOT IN ('upload','book')`,
       )
       .all(ruleId) as any[];
   const follow = db.query("SELECT goal FROM follows WHERE user_id = ? AND person_id = ?").get(userId, personId) as any;

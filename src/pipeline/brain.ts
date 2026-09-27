@@ -44,7 +44,8 @@ ${it.deleted_at ? "_This item was deleted by its author; text removed._" : passa
     .map((p) => `### ${p.locator} — speaker: ${p.speaker ?? "unknown"}${p.speaker_is_subject === 1 ? " (the person)" : p.speaker_is_subject === 0 ? " (not the person)" : ""}\n\n${quoteUntrusted(p.text.slice(0, 3000))}`)
     .join("\n\n")}
 `;
-  return putPage("public", `evidence/${it.person_id}/${itemId}`, md);
+  // Restricted sources (Bookface) never enter the public brain.
+  return putPage(it.restricted ? "private:local" : "public", `evidence/${it.person_id}/${itemId}`, md);
 }
 
 export async function syncClaimsAndRules(personId: string): Promise<{ claims: number; rules: number }> {
@@ -56,9 +57,10 @@ export async function syncClaimsAndRules(personId: string): Promise<{ claims: nu
     const ev = db
       .query(
         `SELECT ce.relation, ce.quote, p.locator, i.id item_id, i.url, i.published_at, i.occurred_at FROM claim_evidence ce
-         JOIN passages p ON p.id = ce.passage_id JOIN items i ON i.id = p.item_id WHERE ce.claim_id = ? ORDER BY COALESCE(i.occurred_at, i.published_at)`,
+         JOIN passages p ON p.id = ce.passage_id JOIN items i ON i.id = p.item_id WHERE ce.claim_id = ? AND (i.restricted = 0 OR ? = 1)
+         ORDER BY COALESCE(i.occurred_at, i.published_at)`,
       )
-      .all(c.id) as any[];
+      .all(c.id, c.restricted ? 1 : 0) as any[]; // public pages never quote restricted sources
     const hist = db.query("SELECT version, statement, status, recorded_at FROM claim_history WHERE claim_id = ? ORDER BY version").all(c.id) as any[];
     const md = `---
 title: ${yamlStr(`${person.name}: ${c.topic}`)}
@@ -82,14 +84,14 @@ ${ev.map((e) => `- ${e.relation} · ${(e.occurred_at ?? e.published_at ?? "undat
 ## Position history
 ${hist.map((h) => `- v${h.version} (${h.status}, recorded ${h.recorded_at.slice(0, 10)}): ${h.statement}`).join("\n")}
 `;
-    if ((await putPage("public", `claims/${personId}/${c.id}`, md)) === "written") nc++;
+    if ((await putPage(c.restricted ? "private:local" : "public", `claims/${personId}/${c.id}`, md)) === "written") nc++;
   }
   const rules = db.query("SELECT * FROM rules WHERE person_id = ?").all(personId) as any[];
   for (const r of rules) {
     const d = JSON.parse(r.data);
     const ev = db
-      .query("SELECT p.locator, i.id item_id, i.url FROM rule_evidence re JOIN passages p ON p.id = re.passage_id JOIN items i ON i.id = p.item_id WHERE re.rule_id = ?")
-      .all(r.id) as any[];
+      .query("SELECT p.locator, i.id item_id, i.url FROM rule_evidence re JOIN passages p ON p.id = re.passage_id JOIN items i ON i.id = p.item_id WHERE re.rule_id = ? AND (i.restricted = 0 OR ? = 1)")
+      .all(r.id, r.restricted ? 1 : 0) as any[];
     const md = `---
 title: ${yamlStr(`${person.name} method: ${d.principle.slice(0, 90)}`)}
 type: concept
@@ -117,7 +119,7 @@ Example non-use: ${d.example_non_use}
 ## Supporting evidence
 ${ev.map((e) => `- [[evidence/${personId}/${e.item_id}]] (${e.locator}) ${e.url ?? ""}`).join("\n")}
 `;
-    if ((await putPage("public", `rules/${personId}/${r.id}`, md)) === "written") nr++;
+    if ((await putPage(r.restricted ? "private:local" : "public", `rules/${personId}/${r.id}`, md)) === "written") nr++;
   }
   // Person hub page
   const ids = db.query("SELECT kind, value, verified FROM identities WHERE person_id = ?").all(personId) as any[];
@@ -139,10 +141,10 @@ ${person.description ?? ""}
 ${ids.filter((i) => !["alias", "position"].includes(i.kind)).map((i) => `- ${i.kind}: ${i.value} (${i.verified ? "independently confirmed" : "asserted"})`).join("\n")}
 
 ## Tracked claims
-${claims.map((c) => `- [[claims/${personId}/${c.id}]] ${c.topic} (${c.status})`).join("\n")}
+${claims.filter((c) => !c.restricted).map((c) => `- [[claims/${personId}/${c.id}]] ${c.topic} (${c.status})`).join("\n")}
 
 ## Methods
-${rules.map((r) => `- [[rules/${personId}/${r.id}]] ${JSON.parse(r.data).principle.slice(0, 100)} (${r.status})`).join("\n")}
+${rules.filter((r) => !r.restricted).map((r) => `- [[rules/${personId}/${r.id}]] ${JSON.parse(r.data).principle.slice(0, 100)} (${r.status})`).join("\n")}
 `,
   );
   return { claims: nc, rules: nr };

@@ -90,6 +90,7 @@ export function storeItem(source: SourceRow, it: RawItem): StoreOutcome {
       id, it.passages.map((p) => p.text).join("\n\n"), hash, JSON.stringify(it.raw ?? {}), ts,
     );
     insertPassages(id, 1, it);
+    if (it.raw?.restricted) db.query("UPDATE items SET restricted = 1 WHERE id = ?").run(id);
     if (isDup) {
       const republished = !!sameHash;
       return {

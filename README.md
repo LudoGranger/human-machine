@@ -112,6 +112,7 @@ identity (Wikidata + independent confirmation)
 | News | Google News RSS | polling | headlines | Always *reporting about* the person; syndicated copies and same-event reports clustered |
 | Books | Open Library (Google Books optional) | none | metadata | Historical context only. Full text only if public domain, licensed, or your authorized upload with edition/page references |
 | Federal Register | public API | polling | abstracts | Official presidential documents (signed = occurred, published = published) |
+| YC Bookface | YC CLI login (`yc login`, YC founders) | polling | excerpts | **Restricted**: the person's own posts only; kept private to you; never exported, published, or shared with QM/other agents |
 | LinkedIn | — | — | — | No authorized API for third-party member posts: recorded as **Access required**, not scraped. Paste material manually |
 | Manual | pasted URL / upload | — | full | You declare attribution and your right to use it |
 
@@ -131,6 +132,7 @@ Separate `GBRAIN_HOME` directories mean separate databases; tags are not used as
 
 - **Agent API** (read-only, bearer token per user): `/agent/v1/context`, `/agent/v1/changes`, `/agent/v1/evidence/:id`.
 - **MCP**: `claude mcp add human-machine -- bun run /path/to/human-machine/src/cli.ts mcp`
+- **QM (yc-software/qm) memory provider**: `bun run hm qm-client <label> --url <reachable URL>` prints QM's `MEMORY_PROVIDER_CONFIG`; QM workspaces then recall cited evidence (`hm_recall`) and explicitly keep private notes (`hm_keep`). See [docs/QM-PROVIDER.md](docs/QM-PROVIDER.md).
 - **Agent Skills package**: `bun run hm export-skill <person> --install user`. It contains a concise `SKILL.md`, conditional rules, provenance, setup, and `scripts/hm_context.sh`, which fetches fresh context and prints `refreshed_at`. If the app is unreachable it prints the last cached copy explicitly labelled **STALE**. Versions are immutable and can be rolled back.
 
 ## Optional: always-on server

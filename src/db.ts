@@ -334,6 +334,44 @@ const MIGRATIONS: string[] = [
   ALTER TABLE items ADD COLUMN analyzed_at TEXT;
   ALTER TABLE items ADD COLUMN injection_flag INTEGER NOT NULL DEFAULT 0;
   `,
+  `
+  -- QM memory-provider integration (OAuth2 client credentials → short-lived tokens)
+  CREATE TABLE qm_clients (
+    client_id TEXT PRIMARY KEY,
+    secret_hash TEXT NOT NULL,
+    owner_user_id TEXT NOT NULL REFERENCES users(id),
+    can_write INTEGER NOT NULL DEFAULT 0,
+    label TEXT,
+    created_at TEXT NOT NULL,
+    revoked_at TEXT
+  );
+  CREATE TABLE qm_tokens (
+    token_hash TEXT PRIMARY KEY,
+    client_id TEXT NOT NULL REFERENCES qm_clients(client_id),
+    expires_at TEXT NOT NULL,
+    created_at TEXT NOT NULL
+  );
+  -- Explicit "Keep" records: private per acting user, idempotent.
+  CREATE TABLE keeps (
+    id TEXT PRIMARY KEY,
+    user_ns TEXT NOT NULL,           -- e.g. qm:<client>:<acting_user>
+    idempotency_key TEXT,
+    content TEXT NOT NULL,
+    source TEXT,
+    captured_at TEXT,
+    created_at TEXT NOT NULL,
+    gbrain_slug TEXT,
+    UNIQUE(user_ns, idempotency_key)
+  );
+  `,
+  `
+  -- Restricted sources (e.g. YC Bookface via the user's own YC CLI login):
+  -- visible to the local user only; never synced to the public brain,
+  -- skill exports, QM recall or shared workspaces.
+  ALTER TABLE items ADD COLUMN restricted INTEGER NOT NULL DEFAULT 0;
+  ALTER TABLE claims ADD COLUMN restricted INTEGER NOT NULL DEFAULT 0;
+  ALTER TABLE rules ADD COLUMN restricted INTEGER NOT NULL DEFAULT 0;
+  `,
 ];
 
 function migrate(d: Database) {
