@@ -6,7 +6,7 @@ Snapshot from the build machine, 2026-09-27 (UTC evening). Numbers come from the
 
 | Requirement | Status | Evidence |
 |---|---|---|
-| Runnable application | ✅ | `bun run hm serve` → web UI + API + worker on 127.0.0.1:4747 |
+| Runnable application (backend) | ✅ | `bun run hm serve` → API + worker on 127.0.0.1:4747; frontend is ChatGPT's scope |
 | One person researched with real accessible sources | ✅ Garry Tan | 168 items from 12 live sources (GitHub ×7, blog, YouTube, podcasts, news, books); identity Q23417057 with GitHub/blog/YouTube/X links independently confirmed |
 | Visible update from newly ingested material | ✅ | Change events and a card from `garrytan/alphaclaw` commits made 2026-09-27, collected and analyzed the same evening; all six timestamps shown |
 | Working GBrain evidence query | ✅ | 399 public / 115 app / 9 private pages written through the GBrain 0.59 CLI; `/api/persons/:id/brain?q=` and every card's `gbrain_support` retrieve through GBrain and map hits back to sources |
@@ -51,10 +51,10 @@ Task: write a ship/no-ship memo from an experiment log; 6 deterministic checks f
 
 ## Known gaps and unfinished work
 
-- X, LinkedIn and full video/podcast transcripts are not covered (access), and the UI says so.
+- X, LinkedIn and full video/podcast transcripts are not covered (access); the API reports them as `access_required` / `metadata_only`.
 - Durable rules: 0 so far (every rule has one supporting item; promotion needs ≥2 independent items on different days).
 - Market/policy lab (historical event studies) is not built; the product makes no return predictions and takes no trading actions.
 - GBrain pages for claims removed during re-analysis are not deleted from the brain (orphans; harmless but untidy).
 - DNS rebinding: addresses are checked before connecting, not pinned for the connection.
-- The web UI is functional; its visual redesign and the marketing site are ChatGPT's scope (COLLABORATION.md).
+- No frontend or website in this repository yet: both are ChatGPT's scope (COLLABORATION.md). An earlier interim UI/site built by Claude was removed at the owner's request.
 - Windows and non-Claude-Code clients are untested.

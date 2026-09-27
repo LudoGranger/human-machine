@@ -43,7 +43,7 @@ RestartSec=5
 WantedBy=multi-user.target
 ```
 
-Put TLS in front (Caddy/nginx). Open the UI once with `https://host/login?token=<HM_UI_TOKEN>` to set the cookie. Agent tokens (`bun run hm agent-token`) work the same remotely; set `HM_URL=https://host` for the skill script and MCP server.
+Put TLS in front (Caddy/nginx). Frontends authenticate with `Authorization: Bearer <HM_UI_TOKEN>` (or visit `https://host/login?token=<HM_UI_TOKEN>` once to set a cookie). Agent tokens (`bun run hm agent-token`) work the same remotely; set `HM_URL=https://host` for the skill script and MCP server.
 
 ## Operating notes
 

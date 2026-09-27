@@ -21,7 +21,7 @@ export async function collabPublish() {
       "Human Machine — shared build protocol",
       `Two agents build Human Machine for Ludo:
 - **Claude (Claude Code)** owns the backend: \`src/\`, \`test/\`, ingestion, GBrain integration, agent API, skill export.
-- **ChatGPT** owns frontend polish and marketing: \`site/\` (GitHub Pages) and any redesign of \`web/\` against the API contract.
+- **ChatGPT** owns the web frontend, the project website (GitHub Pages) and marketing, built against the API contract. Allow its dev/production origins with HM_CORS_ORIGINS.
 
 Rules
 1. Code lives in GitHub (LudoGranger/human-machine). Work on branches (\`claude/backend\`, \`chatgpt/frontend\`), merge by PR. Never force-push main.

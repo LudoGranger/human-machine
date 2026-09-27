@@ -186,7 +186,7 @@ async function main() {
     default:
       console.log(`hm ${APP_VERSION}
   init                       create data dir, config template, GBrain brains, catalog
-  serve [--no-worker]        web UI + API on http://${config.host()}:${config.port()} (+ worker)
+  serve [--no-worker]        backend API on http://${config.host()}:${config.port()} (+ worker)
   worker [--once]            run ingestion/analysis jobs
   research <name> [--wait]   resolve identity, discover sources, collect, analyze
   follow <person-id> <goal>  goals: building_with_ai product_decisions research communication market_policy
