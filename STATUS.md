@@ -86,5 +86,5 @@ Task: write a ship/no-ship memo from an experiment log; 6 deterministic checks f
 - Market/policy lab (historical event studies) is not built; the product makes no return predictions and takes no trading actions.
 - GBrain pages for claims removed during re-analysis are not deleted from the brain (orphans; harmless but untidy).
 - DNS rebinding: addresses are checked before connecting, not pinned for the connection.
-- No frontend or website in this repository yet: both are ChatGPT's scope (COLLABORATION.md). An earlier interim UI/site built by Claude was removed at the owner's request.
+- The [static website](https://ludogranger.github.io/human-machine/) is public: it builds an editable task-and-team prompt and offers the portable skill download. It does not call the local backend directly. Browser checks cover team selection, task editing, prompt contents, private-person material rules and copy feedback. A separate application frontend for the backend is still outside this delivered site.
 - Windows and non-Claude-Code clients are untested.

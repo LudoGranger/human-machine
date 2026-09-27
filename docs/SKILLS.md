@@ -39,7 +39,7 @@ Writing is part of Ask, Compare and Mix. Learning from corrections and outcomes 
 
 ## Fresh sources and memory
 
-The skill uses the tools available in its host. When the Human Machine MCP connector is already configured, it can read current context, changes and evidence. That connector is currently read-only. Keeping a lesson across sessions requires a separate authorized private memory tool; otherwise the skill provides a note to save.
+The skill uses the tools available in its host. The connected Human Machine MCP server can read current context, changes and evidence. With a keep-scoped token, `hm_pick` starts public-person research and `hm_keep` saves an explicitly chosen lesson to your private GBrain memory with read-back; `hm_list_keeps` retrieves saved lessons. Read-only tokens cannot Pick or Keep. Without an authorized memory tool, the skill gives you a note to save and does not claim persistence. See the [backend setup and verification](https://github.com/LudoGranger/human-machine/blob/main/STATUS.md#the-six-hm-commands-chatgpts-skill--claudes-backend).
 
 For background source collection and GBrain storage, install the [full local application](https://github.com/LudoGranger/human-machine#install). It is separate from this portable skill download. Provider access, freshness and costs depend on that configuration. The static website does not itself run collectors.
 
