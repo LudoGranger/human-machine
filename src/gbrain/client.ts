@@ -198,6 +198,8 @@ export function fullSlug(layer: Layer, slug: string): string {
 }
 
 export async function putPage(layer: Layer, slug: string, markdown: string): Promise<"written" | "unchanged"> {
+  // Postgres/PGLite text cannot hold NUL or lone surrogates.
+  markdown = markdown.toWellFormed().replace(/\u0000/g, "");
   const hash = sha256(markdown);
   const prev = getDb().query("SELECT content_hash FROM gbrain_writes WHERE layer = ? AND slug = ?").get(layer, slug) as { content_hash: string } | null;
   if (prev?.content_hash === hash) return "unchanged";

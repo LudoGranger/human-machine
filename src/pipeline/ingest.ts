@@ -106,6 +106,7 @@ export function storeItem(source: SourceRow, it: RawItem): StoreOutcome {
 }
 
 function insertPassages(itemId: string, version: number, it: RawItem) {
+  for (const p of it.passages) p.text = p.text.toWellFormed().replace(/\u0000/g, "");
   const ins = getDb().query(
     "INSERT OR REPLACE INTO passages (id, item_id, version, locator, speaker, speaker_is_subject, text, text_hash, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
   );

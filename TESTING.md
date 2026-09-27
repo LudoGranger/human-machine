@@ -1,7 +1,7 @@
 # Testing
 
 ```bash
-bun test          # 30 tests: failure cases + real GBrain integration (skipped if gbrain is not installed)
+bun test          # 31 tests: failure cases + real GBrain integration (skipped if gbrain is not installed)
 bunx tsc --noEmit
 ```
 

@@ -167,6 +167,14 @@ describe("duplicates and republished content", () => {
   });
 });
 
+describe("hostile bytes", () => {
+  test("NUL characters in source text are removed before storage (Postgres/PGLite reject them)", () => {
+    const o = storeItem(mkSource("s-nul"), item({ externalId: "nul", url: "https://example.com/nul", passages: [{ locator: "p", text: "Section 1.\u0000 Policy text that is long enough to analyze here.", speaker: "Ada Test", speakerIsSubject: true }] }));
+    const t = (getDb().query("SELECT text FROM passages WHERE item_id = ?").get(o.itemId) as any).text;
+    expect(t.includes("\u0000")).toBe(false);
+  });
+});
+
 describe("edits and deletions", () => {
   test("edited post becomes version 2 of the same item", () => {
     const src = mkSource("s-x", "x");
