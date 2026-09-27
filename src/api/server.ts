@@ -1,9 +1,9 @@
-// HTTP server: web UI + app API (local user) + read-only agent API (bearer).
+// HTTP API server (backend only): app API for the local user + read-only agent
+// API (bearer). The web frontend is a separate project (see COLLABORATION.md)
+// and may call this API from origins listed in HM_CORS_ORIGINS.
 // Binds to 127.0.0.1 by default. When bound elsewhere (server deployment),
-// the UI/app API requires HM_UI_TOKEN; the agent API always requires a token.
-import { join, resolve, normalize } from "node:path";
-import { existsSync } from "node:fs";
-import { config, env } from "../config.ts";
+// the app API requires HM_UI_TOKEN; the agent API always requires a token.
+import { APP_VERSION, config, env } from "../config.ts";
 import * as app from "../app.ts";
 import { setCardStatus, generateCards } from "../pipeline/cards.ts";
 import { evidenceQuery } from "../pipeline/brain.ts";
@@ -13,7 +13,6 @@ import { exportSkill, listSkillVersions, rollbackSkill } from "../export/skill.t
 import { listExperiments } from "../eval/experiment.ts";
 import { getDb } from "../db.ts";
 
-const WEB = resolve(import.meta.dir, "../../web");
 const LOCAL_USER = "local";
 
 const json = (d: unknown, status = 200) =>
@@ -24,7 +23,7 @@ function uiAuthorized(req: Request): boolean {
   const host = config.host();
   if (host === "127.0.0.1" || host === "localhost" || host === "::1") return true;
   const t = env("HM_UI_TOKEN");
-  if (!t) return false; // refuse to expose the UI without a token
+  if (!t) return false; // refuse to expose the app API without a token
   const cookie = req.headers.get("cookie") ?? "";
   return cookie.split(/;\s*/).includes(`hm_ui=${t}`) || req.headers.get("authorization") === `Bearer ${t}`;
 }
@@ -74,7 +73,7 @@ export async function route(req: Request): Promise<Response> {
   if (!uiAuthorized(req)) {
     if (path === "/login" && url.searchParams.get("token") === env("HM_UI_TOKEN"))
       return new Response(null, { status: 302, headers: { location: "/", "set-cookie": `hm_ui=${env("HM_UI_TOKEN")}; HttpOnly; SameSite=Strict; Path=/` } });
-    return err(401, "UI token required");
+    return err(401, "API token required (HM_UI_TOKEN)");
   }
 
   // ---- App API ----------------------------------------------------------------
@@ -148,12 +147,23 @@ export async function route(req: Request): Promise<Response> {
     }
   }
 
-  // ---- Static web UI ---------------------------------------------------------
-  const rel = path === "/" ? "index.html" : normalize(path).replace(/^\/+/, "");
-  const file = join(WEB, rel);
-  if (!file.startsWith(WEB)) return err(403, "forbidden");
-  if (existsSync(file) && !rel.endsWith("/")) return new Response(Bun.file(file), { headers: { "x-content-type-options": "nosniff" } });
-  return new Response(Bun.file(join(WEB, "index.html")));
+  if (path === "/" || path === "/api") {
+    return json({ name: "human-machine", version: APP_VERSION, api: "/api/*", agent_api: "/agent/v1/*", contract: "docs/API.md" });
+  }
+  return err(404, "not found");
+}
+
+function corsHeaders(req: Request): Record<string, string> {
+  const origin = req.headers.get("origin");
+  const allowed = (env("HM_CORS_ORIGINS") ?? "").split(",").map((o) => o.trim()).filter(Boolean);
+  if (!origin || !allowed.includes(origin)) return {};
+  return {
+    "access-control-allow-origin": origin,
+    "access-control-allow-methods": "GET, POST, OPTIONS",
+    "access-control-allow-headers": "content-type, authorization",
+    "access-control-allow-credentials": "true",
+    vary: "origin",
+  };
 }
 
 export function serve() {
@@ -161,12 +171,16 @@ export function serve() {
     hostname: config.host(),
     port: config.port(),
     idleTimeout: 60,
-    fetch: (req) =>
-      route(req).then((r) => {
-        r.headers.set("content-security-policy", "default-src 'self'; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; frame-ancestors 'none'");
+    fetch: (req) => {
+      const cors = corsHeaders(req);
+      if (req.method === "OPTIONS") return new Response(null, { status: cors["access-control-allow-origin"] ? 204 : 403, headers: cors });
+      return route(req).then((r) => {
+        for (const [k, v] of Object.entries(cors)) r.headers.set(k, v);
+        r.headers.set("content-security-policy", "default-src 'none'; frame-ancestors 'none'");
         r.headers.set("referrer-policy", "no-referrer");
         return r;
-      }),
+      });
+    },
   });
   return server;
 }

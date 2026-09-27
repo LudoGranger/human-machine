@@ -10,9 +10,8 @@ Human Machine follows what selected people publish, experiment with, change thei
 
 > “Thinking” here means an evidence-backed interpretation of public statements and actions. Human Machine never claims access to private thoughts and never implies that a person endorses you or this app.
 
-It is open source (MIT) and runs on your own computer: crawler workers, a durable job queue, [GBrain](https://github.com/garrytan/gbrain) memory, a web UI, a read-only agent API, an MCP server and an Agent Skills exporter.
+This repository includes the **local backend**, portable agent skills and the static project website. The backend provides crawler workers, a durable job queue, [GBrain](https://github.com/garrytan/gbrain) memory, an HTTP API, a read-only agent API, an MCP server and a person-specific skill exporter. The website creates setup prompts; it does not expose local runtime data. An application frontend can use [docs/API.md](docs/API.md).
 
-- Project site: https://ludogranger.github.io/human-machine/
 - Honest status of every integration: [STATUS.md](STATUS.md)
 - Backend API contract: [docs/API.md](docs/API.md)
 - Tests and tested platforms: [TESTING.md](TESTING.md)
@@ -39,7 +38,7 @@ bun run hm init          # creates ~/.human-machine (mode 700), .env template (6
 bun run hm doctor        # shows what is configured and what is not
 ```
 
-Choose an analysis model in `~/.human-machine/.env` (without one, material is collected and stored but not analyzed, and the UI says so):
+Choose an analysis model in `~/.human-machine/.env` (without one, material is collected and stored but not analyzed, and the API reports `analysis_status: unavailable`):
 
 ```bash
 # either: Anthropic API key (paid per use)
@@ -52,10 +51,10 @@ HM_LLM_DAILY_BUDGET_USD=2
 Run it:
 
 ```bash
-bun run hm serve         # web UI + API on http://127.0.0.1:4747, with the worker
+bun run hm serve         # backend API on http://127.0.0.1:4747, with the worker
 ```
 
-Open http://127.0.0.1:4747, choose a person (or type any name), choose a goal, and watch research progress and source coverage.
+Drive it from the CLI (below) or from a frontend that calls the API. To let a frontend on another origin call it, set `HM_CORS_ORIGINS` in `~/.human-machine/.env`.
 
 ## Demo flow (what was actually run — see STATUS.md for results)
 
@@ -74,7 +73,7 @@ bun run hm eval garry-tan                       # 3-arm workflow experiment
 
 | Feature | Needs | Cost |
 |---|---|---|
-| App, worker, database, web UI, agent API, MCP server, skill export | Bun | Free |
+| Backend, worker, database, API, agent API, MCP server, skill export | Bun | Free |
 | GBrain memory (local PGLite, keyword search) | GBrain CLI | Free |
 | GitHub commits/releases/activity, blogs & newsletters (RSS/Atom), YouTube channel metadata, podcast search (Apple), news headlines (Google News RSS), Open Library, Federal Register | Public feeds/APIs | Free |
 | Analysis: claims, change detection, rules, learning cards, experiments | `ANTHROPIC_API_KEY` **or** Claude Code CLI | Paid per use, or your Claude plan. Daily budget enforced (`HM_LLM_DAILY_BUDGET_USD`) |
@@ -82,7 +81,7 @@ bun run hm eval garry-tan                       # 3-arm workflow experiment
 | GBrain vector search / reranking | Voyage or OpenAI key configured in GBrain | Paid, optional (not used by default) |
 | Hosted GBrain workspace (shared public-evidence brain, agent collaboration) | `GBRAIN_REMOTE_URL` + `GBRAIN_REMOTE_TOKEN` | Per gbrain.io plan, optional |
 | Always-on server | A small VPS | Your hosting cost, optional |
-| GitHub Pages site + GitHub Actions CI | Public repository | Free (public repos) |
+| GitHub Actions CI | Public repository | Free (public repos) |
 
 ## How it works
 
@@ -116,7 +115,7 @@ identity (Wikidata + independent confirmation)
 | LinkedIn | — | — | — | No authorized API for third-party member posts: recorded as **Access required**, not scraped. Paste material manually |
 | Manual | pasted URL / upload | — | full | You declare attribution and your right to use it |
 
-Source status shown in the UI: **Live · Polling · Delayed · Historical · Access required · Failed**. “Live” is only shown for a connected X stream with a heartbeat in the last 30 seconds.
+Source status reported by the API: **Live · Polling · Delayed · Historical · Access required · Failed**. “Live” is only shown for a connected X stream with a heartbeat in the last 30 seconds.
 
 ### GBrain layers
 
@@ -136,11 +135,11 @@ Separate `GBRAIN_HOME` directories mean separate databases; tags are not used as
 
 ## Optional: always-on server
 
-See [docs/DEPLOY.md](docs/DEPLOY.md). GitHub Pages hosts only the static project site; GitHub Actions only runs tests and deploys that site. Neither runs the backend.
+See [docs/DEPLOY.md](docs/DEPLOY.md). GitHub Actions runs tests and deploys the static website to GitHub Pages; it does not run the backend.
 
 ## Working with two agents
 
-This repository is built by Claude (backend) and ChatGPT (frontend/marketing) sharing one GBrain workspace. See [COLLABORATION.md](COLLABORATION.md).
+The backend is built by Claude; the frontend, website and marketing by ChatGPT. Code is shared through this repository; the proposed shared GBrain connection has not yet been verified by both agents. See [COLLABORATION.md](COLLABORATION.md).
 
 ## Rights
 
