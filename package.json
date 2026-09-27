@@ -1,0 +1,31 @@
+{
+  "name": "human-machine",
+  "version": "0.1.0",
+  "description": "Follow selected people's public thinking and turn evidence-backed changes into improvements to your daily work with AI.",
+  "license": "MIT",
+  "type": "module",
+  "private": true,
+  "bin": {
+    "hm": "src/cli.ts"
+  },
+  "scripts": {
+    "start": "bun run src/cli.ts serve",
+    "worker": "bun run src/cli.ts worker",
+    "hm": "bun run src/cli.ts",
+    "test": "bun test",
+    "typecheck": "tsc --noEmit",
+    "site": "bun run scripts/build-site.ts"
+  },
+  "engines": {
+    "bun": ">=1.1"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.128.0",
+    "fast-xml-parser": "^5.11.1",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.4.2",
+    "typescript": "^7.0.2"
+  }
+}
