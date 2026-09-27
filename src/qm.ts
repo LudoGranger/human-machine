@@ -124,18 +124,23 @@ export async function recall(ownerUserId: string, args: Record<string, unknown>)
 }
 
 export async function keep(ownerUserId: string, args: Record<string, unknown>): Promise<Record<string, unknown>> {
-  const content = String(args.content ?? "").trim();
   const acting = String(args.acting_user ?? "").trim();
-  if (!content) throw new Error("content required");
   if (!acting) throw new Error("acting_user required: kept notes are private to one user");
   const ns = userNs(ownerUserId, acting);
+  return storeKeep(ns, privateLayer(ns), args);
+}
+
+// Explicit, idempotent private note: written to the user's private GBrain brain
+// and read back before success is reported.
+export async function storeKeep(ns: string, layer: Layer, args: Record<string, unknown>): Promise<Record<string, unknown>> {
+  const content = String(args.content ?? "").trim();
+  if (!content) throw new Error("content required");
   const idem = args.idempotency_key ? String(args.idempotency_key) : sha256(content);
   const db = getDb();
   const existing = db.query("SELECT id, gbrain_slug FROM keeps WHERE user_ns = ? AND idempotency_key = ?").get(ns, idem) as any;
   if (existing) return { kept: true, id: existing.id, duplicate: true, gbrain_slug: existing.gbrain_slug };
   const id = `keep_${shortHash(ns + idem)}`;
   const slug = `keeps/${id}`;
-  const layer = privateLayer(ns);
   const md = `---\ntitle: ${yamlStr(`Kept note ${id}`)}\ntype: note\ntags: [human-machine, keep, private]\nsource: ${yamlStr(String(args.source ?? "qm"))}\ncaptured_at: ${yamlStr(args.captured_at ? String(args.captured_at) : now())}\n---\n\n${quoteUntrusted(content.slice(0, 8000))}\n`;
   await putPage(layer, slug, md);
   const back = await getPage(layer, slug);

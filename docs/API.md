@@ -56,4 +56,14 @@ Any frontend (including a redesigned one) should treat every text field that com
 | `/agent/v1/changes?person=&since=ISO` | `{generated_at, since, changes:[{…, evidence:[passages]}]}` |
 | `/agent/v1/evidence/:itemId?person=` | item with passages, speakers and all dates |
 
-Tokens map to one user; one user's goals and cards are never visible to another token.
+Write operations (token created with `hm agent-token --write`, scope `read keep`; read-only tokens get 403):
+
+| Method | Path | Body | Returns |
+|---|---|---|---|
+| POST | `/agent/v1/pick` | `{name, goal?, note?}` | `{person, goal, note}` — follows a **public** person; research runs in the background after identity verification. Never use for private people |
+| POST | `/agent/v1/keep` | `{content, person?, status?, idempotency_key?}` | `{kept, id, duplicate, gbrain_slug, readback}` — private to this user, idempotent, written to the user's private GBrain brain and read back |
+| GET | `/agent/v1/keeps?q=` | — | this user's kept notes |
+
+MCP tools (stdio, `hm mcp`): `hm_list_people`, `hm_get_context`, `hm_changes_since`, `hm_get_evidence` (read) and `hm_pick`, `hm_keep`, `hm_list_keeps` (need a keep-scoped token). These back the `/hm` skill's Pick, Catch up, Ask, Compare, Mix and Keep.
+
+Tokens map to one user; one user's goals, cards and kept notes are never visible to another token.

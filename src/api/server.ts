@@ -57,9 +57,21 @@ export async function route(req: Request): Promise<Response> {
 
   // ---- Agent API (read-only, bearer token → user) -------------------------
   if (path.startsWith("/agent/v1/")) {
-    if (req.method !== "GET") return err(405, "read-only API");
     const userId = app.userForToken(bearer(req));
     if (!userId) return err(401, "missing or invalid agent token");
+    if (req.method === "POST") {
+      if (!(app.tokenScope(bearer(req)) ?? "").includes("keep")) return err(403, "this token is read-only (create one with: hm agent-token --write)");
+      if (!(req.headers.get("content-type") ?? "").includes("application/json")) return err(415, "JSON required");
+      try {
+        if (path === "/agent/v1/keep") return json(await app.agentKeep(userId, await body(req)));
+        if (path === "/agent/v1/pick") return json(app.agentPick(userId, await body(req)));
+      } catch (e) {
+        return err(400, (e as Error).message.slice(0, 200));
+      }
+      return err(404, "unknown endpoint");
+    }
+    if (req.method !== "GET") return err(405, "method not allowed");
+    if (path === "/agent/v1/keeps") return json(app.agentListKeeps(userId, url.searchParams.get("q") ?? undefined));
     const person = url.searchParams.get("person") ?? "";
     if (path === "/agent/v1/context") {
       const ctx = await app.agentContext(userId, person, url.searchParams.get("goal") ?? undefined);

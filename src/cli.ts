@@ -122,11 +122,11 @@ async function main() {
     }
     case "agent-token": {
       app.ensureUser();
-      const token = app.createAgentToken("local", pos[0] ?? "desktop agent");
+      const token = app.createAgentToken("local", pos[0] ?? "desktop agent", flag("--write"));
       const f = process.env.HM_TOKEN_FILE || join(homedir(), ".human-machine", "agent-token");
       writeFileSync(f, token, { mode: 0o600 });
       chmodSync(f, 0o600);
-      console.log(`read-only agent token written to ${f} (mode 600)`);
+      console.log(`${flag("--write") ? "read + keep/pick" : "read-only"} agent token written to ${f} (mode 600)`);
       break;
     }
     case "export-skill": {
