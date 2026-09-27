@@ -1,8 +1,19 @@
 # Human Machine
 
-**Build an evolving version of yourself, shaped by the humans you pick.**
+## Own ~~Your~~ Their Intelligence
+
+**Choose your human.**
+Get their real-time thinking about the world to improve your daily outcomes with AI.
+
+Build an evolving version of yourself, shaped by the humans you pick. Human Machine follows what people publish, experiment with, change their minds about and put into practice — and turns it into better work with your AI.
+
+**What changed? · Why does it matter to me? · What can I try? · Did it improve my work?**
 
 Pick your team, bring your work, and take both into your AI. [Build your prompt →](https://ludogranger.github.io/human-machine/)
+
+> “Thinking” means an evidence-backed interpretation of public statements and actions — never private thoughts, never an endorsement. Every insight carries its source and dates.
+
+**Live today** ([full status](STATUS.md)): X (official API), GitHub, blogs, YouTube, podcasts, news, Federal Register and — for YC founders — Bookface via the YC CLI (kept private) · memory in [GBrain](https://github.com/garrytan/gbrain) · works as a [QM](https://github.com/yc-software/qm) memory provider · `/keep` saves to your private brain and reads it back.
 
 ## Your six actions
 

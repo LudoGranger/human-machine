@@ -15,6 +15,7 @@ import { config, env } from "../config.ts";
 import { HttpError, safeFetch } from "../net/safeFetch.ts";
 import { AccessRequiredError, type Adapter, type CollectResult, type PersonContext, type RawItem, type SourceRow } from "./types.ts";
 import { sleep } from "../util.ts";
+import { isOldAtDiscovery } from "./feeds.ts";
 
 export const xApiBase = () => env("HM_X_API_BASE") || "https://api.x.com";
 
@@ -136,7 +137,11 @@ export const xAdapter: Adapter = {
     do {
       if (token) params.set("pagination_token", token);
       const j = await xGet(`/2/users/${c.userId}/tweets?${params}`, signal);
-      for (const t of j.data ?? []) items.push(tweetToItem(t, j.includes, source.locator, person));
+      for (const t of j.data ?? []) {
+        const it = tweetToItem(t, j.includes, source.locator, person);
+        it.isHistorical = isOldAtDiscovery(it.publishedAt, source); // old posts are baseline, not "new"
+        items.push(it);
+      }
       token = j.meta?.next_token;
       if (j.meta?.newest_id && (!c.sinceId || BigInt(j.meta.newest_id) > BigInt(c.sinceId)) && pages === 0) c.sinceId = j.meta.newest_id;
       pages++;
