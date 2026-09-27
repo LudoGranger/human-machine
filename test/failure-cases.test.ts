@@ -290,7 +290,7 @@ describe("cross-user leakage", () => {
     expect(JSON.stringify(ctx)).not.toContain("alice");
     expect(app.cardsFor("bob", "ada-test")).toEqual([]);
     expect(app.cardsFor("alice", "ada-test").length).toBe(1);
-  });
+  }, 120_000); // first call initializes a fresh GBrain brain
   test("invalid or revoked tokens are rejected", () => {
     expect(app.userForToken("hm_nope")).toBeNull();
     expect(app.userForToken(null)).toBeNull();
