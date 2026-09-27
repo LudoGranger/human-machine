@@ -27,4 +27,4 @@ jobs:
       - name: Secret hygiene
         run: |
           ! git ls-files | grep -E '(^|/)\.env$|\.sqlite$|\.pglite|agent-token'
-          ! git grep -nE '(sk-ant-[A-Za-z0-9]|ghp_[A-Za-z0-9]{20}|AAAAAAAAAAAAAAAAAAAAA)' -- ':!*.md'
+          ! git grep -nE '(sk-ant-[A-Za-z0-9]|ghp_[A-Za-z0-9]{20}|AAAAAAAAAAAAAAAAAAAAA)' -- ':!*.md' ':!.github/workflows/*'
