@@ -1,2 +1,144 @@
-# human-machine
-Build an evolving version of yourself, shaped by people you choose. Open-source skills for learning, feedback, comparison, and personal synthesis.
+# Human Machine
+
+**Own ~~Your~~ Their Intelligence**
+
+Choose your human.
+Get their real-time thinking about the world to improve your daily outcomes with AI.
+
+Human Machine follows what selected people publish, experiment with, change their minds about and put into practice, and turns relevant discoveries into improvements to your daily work with AI. It keeps four questions central: **What changed? Why does it matter to me? What can I try? Did it improve my work?**
+
+> “Thinking” here means an evidence-backed interpretation of public statements and actions. Human Machine never claims access to private thoughts and never implies that a person endorses you or this app.
+
+It is open source (MIT) and runs on your own computer: crawler workers, a durable job queue, [GBrain](https://github.com/garrytan/gbrain) memory, a web UI, a read-only agent API, an MCP server and an Agent Skills exporter.
+
+- Project site: https://ludogranger.github.io/human-machine/
+- Honest status of every integration: [STATUS.md](STATUS.md)
+- Backend API contract: [docs/API.md](docs/API.md)
+- Tests and tested platforms: [TESTING.md](TESTING.md)
+- Build timing and provenance: [BUILD_LOG.md](BUILD_LOG.md)
+
+## Install
+
+Requirements: macOS or Linux, [Bun](https://bun.sh) ≥ 1.1, Git. (Windows: untested.)
+
+```bash
+# 1. Bun and GBrain (GBrain is installed from GitHub, never from npm)
+curl -fsSL https://bun.sh/install | bash
+export PATH="$HOME/.bun/bin:$PATH"
+bun install -g github:garrytan/gbrain
+gbrain --version
+
+# 2. Human Machine
+git clone https://github.com/LudoGranger/human-machine
+cd human-machine
+bun install
+bun run hm init          # creates ~/.human-machine (mode 700), .env template (600), 3 GBrain brains, catalog
+bun run hm doctor        # shows what is configured and what is not
+```
+
+Choose an analysis model in `~/.human-machine/.env` (without one, material is collected and stored but not analyzed, and the UI says so):
+
+```bash
+# either: Anthropic API key (paid per use)
+ANTHROPIC_API_KEY=sk-ant-...
+# or: your locally installed Claude Code CLI (runs with all tools disabled)
+HM_LLM_PROVIDER=claude-cli
+HM_LLM_DAILY_BUDGET_USD=2
+```
+
+Run it:
+
+```bash
+bun run hm serve         # web UI + API on http://127.0.0.1:4747, with the worker
+```
+
+Open http://127.0.0.1:4747, choose a person (or type any name), choose a goal, and watch research progress and source coverage.
+
+## Demo flow (what was actually run — see STATUS.md for results)
+
+```bash
+bun run hm research "Garry Tan" --wait          # identity → sources → collection → analysis
+bun run hm follow garry-tan building_with_ai "I build AI agents for B2B sales"
+bun run hm cards garry-tan                      # "Put this to work" cards for that goal
+bun run hm brain-search garry-tan "evaluation"  # retrieval through GBrain, mapped to sources
+bun run hm agent-token                          # read-only token for desktop agents
+bun run hm export-skill garry-tan --install user   # Agent Skills package → ~/.claude/skills
+bash ~/.claude/skills/hm-garry-tan/scripts/hm_context.sh context   # dated, fresh context
+bun run hm eval garry-tan                       # 3-arm workflow experiment
+```
+
+## What is free, what costs money
+
+| Feature | Needs | Cost |
+|---|---|---|
+| App, worker, database, web UI, agent API, MCP server, skill export | Bun | Free |
+| GBrain memory (local PGLite, keyword search) | GBrain CLI | Free |
+| GitHub commits/releases/activity, blogs & newsletters (RSS/Atom), YouTube channel metadata, podcast search (Apple), news headlines (Google News RSS), Open Library, Federal Register | Public feeds/APIs | Free |
+| Analysis: claims, change detection, rules, learning cards, experiments | `ANTHROPIC_API_KEY` **or** Claude Code CLI | Paid per use, or your Claude plan. Daily budget enforced (`HM_LLM_DAILY_BUDGET_USD`) |
+| X posts (polling, filtered stream, edits, deletions) | `X_BEARER_TOKEN` | X API is paid; without it X sources show **Access required** |
+| GBrain vector search / reranking | Voyage or OpenAI key configured in GBrain | Paid, optional (not used by default) |
+| Hosted GBrain workspace (shared public-evidence brain, agent collaboration) | `GBRAIN_REMOTE_URL` + `GBRAIN_REMOTE_TOKEN` | Per gbrain.io plan, optional |
+| Always-on server | A small VPS | Your hosting cost, optional |
+| GitHub Pages site + GitHub Actions CI | Public repository | Free (public repos) |
+
+## How it works
+
+```
+identity (Wikidata + independent confirmation)
+   → discovery (adapters report capabilities, auth, gaps)
+   → durable jobs (SQLite: leases, idempotency keys, backoff, budgets, cancellation, restart recovery)
+   → fetch through an SSRF guard (public addresses only, every redirect re-checked)
+   → normalize: item → versions (content hash) → passages (locator, speaker, speaker_is_subject)
+   → dedupe / republished / reporting / repost / historical triage
+   → analysis (model output validated; quotes must be verbatim; reversal needs explicit language)
+   → claims + versioned position history, decision cases, conditional rules (provisional → durable)
+   → GBrain: public / app / private-per-user brains
+   → ranked change events → goal-specific "Put this to work" cards
+   → experiments (A existing / B + context / C + context + method), versioned skill adaptations
+   → agent API · MCP · Agent Skills package with fresh-context refresh
+```
+
+### Sources
+
+| Adapter | Access | Real-time | Content | Notes |
+|---|---|---|---|---|
+| X (API v2) | `X_BEARER_TOKEN` (paid) | filtered stream + since_id polling | full | Reposts ≠ endorsement; quoted text keeps its author; edits → versions; deletions purge text and stale dependent insights. Backfill on reconnect is Enterprise-only, so polling closes gaps |
+| GitHub | public Atom + `.patch` | polling | full | Author of record vs other contributors; co-author trailers kept; CHANGELOG/doc additions extracted |
+| Blog / newsletter | RSS/Atom | polling | full | Edited posts become versions; old posts found today are *historical* |
+| YouTube | channel feed | polling | metadata only | Transcripts not collected: `captions.download` requires edit permission on the video. Upload an authorized transcript instead |
+| Podcasts | Apple search + episode RSS | polling | partial | Mentions are candidates; only publisher transcripts (`podcast:transcript`) give speaker-attributed text. No audio transcription |
+| News | Google News RSS | polling | headlines | Always *reporting about* the person; syndicated copies and same-event reports clustered |
+| Books | Open Library (Google Books optional) | none | metadata | Historical context only. Full text only if public domain, licensed, or your authorized upload with edition/page references |
+| Federal Register | public API | polling | abstracts | Official presidential documents (signed = occurred, published = published) |
+| LinkedIn | — | — | — | No authorized API for third-party member posts: recorded as **Access required**, not scraped. Paste material manually |
+| Manual | pasted URL / upload | — | full | You declare attribution and your right to use it |
+
+Source status shown in the UI: **Live · Polling · Delayed · Historical · Access required · Failed**. “Live” is only shown for a connected X stream with a heartbeat in the last 30 seconds.
+
+### GBrain layers
+
+| Layer | Brain | Contents |
+|---|---|---|
+| Public | `~/.human-machine/gbrain/public` (or a hosted workspace) | evidence pages (quoted as blockquotes), claims with history, rules, person hub |
+| App | `~/.human-machine/gbrain/app` | app-generated interpretations and adaptations |
+| Private | `~/.human-machine/gbrain/private-<user>` — one brain per user | goals, cards, outcomes, experiment adaptations |
+
+Separate `GBRAIN_HOME` directories mean separate databases; tags are not used as access controls.
+
+### Desktop agents
+
+- **Agent API** (read-only, bearer token per user): `/agent/v1/context`, `/agent/v1/changes`, `/agent/v1/evidence/:id`.
+- **MCP**: `claude mcp add human-machine -- bun run /path/to/human-machine/src/cli.ts mcp`
+- **Agent Skills package**: `bun run hm export-skill <person> --install user`. It contains a concise `SKILL.md`, conditional rules, provenance, setup, and `scripts/hm_context.sh`, which fetches fresh context and prints `refreshed_at`. If the app is unreachable it prints the last cached copy explicitly labelled **STALE**. Versions are immutable and can be rolled back.
+
+## Optional: always-on server
+
+See [docs/DEPLOY.md](docs/DEPLOY.md). GitHub Pages hosts only the static project site; GitHub Actions only runs tests and deploys that site. Neither runs the backend.
+
+## Working with two agents
+
+This repository is built by Claude (backend) and ChatGPT (frontend/marketing) sharing one GBrain workspace. See [COLLABORATION.md](COLLABORATION.md).
+
+## Rights
+
+Software: MIT (see [LICENSE](LICENSE), [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)). Collected content remains the property of its authors and publishers; nothing collected is committed to this repository.

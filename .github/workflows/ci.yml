@@ -1,0 +1,30 @@
+name: CI
+on:
+  push:
+    branches: [main, "claude/**", "chatgpt/**"]
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.2
+      - run: bun install --frozen-lockfile
+      - run: bunx tsc --noEmit
+      - name: Install GBrain (for the real-CLI integration test)
+        run: |
+          bun install -g github:garrytan/gbrain
+          echo "$HOME/.bun/bin" >> "$GITHUB_PATH"
+      - run: bun test
+      - name: Secret hygiene
+        run: |
+          ! git ls-files | grep -E '(^|/)\.env$|\.sqlite$|\.pglite|agent-token'
+          ! git grep -nE '(sk-ant-[A-Za-z0-9]|ghp_[A-Za-z0-9]{20}|AAAAAAAAAAAAAAAAAAAAA)' -- ':!*.md'

@@ -1,0 +1,13 @@
+node_modules/
+.env
+.env.*
+!.env.example
+data/
+*.sqlite
+*.sqlite-*
+*.pglite
+exports/
+site/dist/
+.DS_Store
+credentials*.json
+*.token
