@@ -38,7 +38,7 @@ Human Machine follows what selected people publish, experiment with, change thei
 
 > “Thinking” here means an evidence-backed interpretation of public statements and actions. Human Machine never claims access to private thoughts and never implies that a person endorses you or this app.
 
-This repository includes the **local backend**, portable agent skills and the static project website. The backend provides crawler workers, a durable job queue, [GBrain](https://github.com/garrytan/gbrain) memory, an HTTP API, a read-only agent API, an MCP server and a person-specific skill exporter. The website creates setup prompts; it does not expose local runtime data. An application frontend can use [docs/API.md](docs/API.md).
+This repository includes the **local backend**, portable agent skills and the static project website. The backend provides crawler workers, a durable job queue, [GBrain](https://github.com/garrytan/gbrain) memory, an HTTP API, a scoped agent API, an MCP server and a person-specific skill exporter. The website creates setup prompts; it does not expose local runtime data. An application frontend can use [docs/API.md](docs/API.md).
 
 - Honest status of every integration: [STATUS.md](STATUS.md)
 - Backend API contract: [docs/API.md](docs/API.md)
@@ -158,7 +158,7 @@ Separate `GBRAIN_HOME` directories mean separate databases; tags are not used as
 
 ### Desktop agents
 
-- **Agent API** (read-only, bearer token per user): `/agent/v1/context`, `/agent/v1/changes`, `/agent/v1/evidence/:id`.
+- **Agent API** (bearer token per user): read context, changes and evidence; keep-scoped tokens also allow `/agent/v1/pick` and `/agent/v1/keep`. See [API permissions](docs/API.md).
 - **MCP**: `claude mcp add human-machine -- bun run /path/to/human-machine/src/cli.ts mcp`
 - **QM (yc-software/qm) memory provider**: `bun run hm qm-client <label> --url <reachable URL>` prints QM's `MEMORY_PROVIDER_CONFIG`; QM workspaces then recall cited evidence (`hm_recall`) and explicitly keep private notes (`hm_keep`). See [docs/QM-PROVIDER.md](docs/QM-PROVIDER.md).
 - **Agent Skills package**: `bun run hm export-skill <person> --install user`. It contains a concise `SKILL.md`, conditional rules, provenance, setup, and `scripts/hm_context.sh`, which fetches fresh context and prints `refreshed_at`. If the app is unreachable it prints the last cached copy explicitly labelled **STALE**. Versions are immutable and can be rolled back.
