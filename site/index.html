@@ -4,48 +4,49 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#faf9f6">
-  <meta name="description" content="Build an evolving version of yourself, shaped by the humans you pick. Copy a prompt into your AI and get started.">
+  <meta name="description" content="Build an evolving version of yourself, shaped by the humans you pick. Choose your team, bring your work, and take it into your AI.">
   <meta property="og:title" content="Human Machine">
   <meta property="og:description" content="Build an evolving version of yourself, shaped by the humans you pick.">
   <title>Human Machine</title>
   <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/marker.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="style.css">
-  <script src="skill-data.js" defer></script>
-  <script src="app.js" defer></script>
+  <link rel="stylesheet" href="style.css?v=20260927-team">
+  <script src="skill-data.js?v=20260927-team" defer></script>
+  <script src="app.js?v=20260927-team" defer></script>
 </head>
 <body>
-  <header class="topbar"><span>Independent intelligence.</span><a href="https://github.com/LudoGranger/human-machine" target="_blank" rel="noreferrer">GitHub ↗</a></header>
+  <header class="topbar"><a href="https://github.com/LudoGranger/human-machine" target="_blank" rel="noreferrer">GitHub ↗</a></header>
   <main>
     <div class="main-copy">
-    <h1 class="wordmark" aria-label="Human Machine"><span>human</span><span>machine</span></h1>
-    <p class="intro">Build an evolving version of yourself,<br>shaped by the humans you pick.</p>
-
-    <section class="start" aria-label="Start Human Machine">
-      <p class="instruction">Copy into your AI. Start with /hm.</p>
-      <div class="prompt-box">
-        <code id="prompt-preview">/hm</code>
-        <button id="copy-prompt" aria-label="Copy Human Machine setup prompt" title="Copy setup prompt"><svg class="copy-icon" width="15" height="15" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.3"/><path d="M12 4V3H3v9h1" stroke="currentColor" stroke-width="1.3"/></svg><span class="copy-label">Copy</span></button>
-      </div>
-      <p id="copy-status" class="copy-status" role="status" aria-live="polite"></p>
-    </section>
-
+      <h1 class="wordmark" aria-label="Human Machine"><span>human</span><span>machine</span></h1>
+      <p class="intro">Build an evolving version of yourself,<br>shaped by the humans you pick.</p>
+      <section class="start" aria-label="Work with your human team">
+        <div class="prompt-box">
+          <div class="prompt-heading"><span class="command">/hm</span><span id="prompt-team">with Brian Chesky</span></div>
+          <label class="sr-only" for="work-prompt">What do you want to work on?</label>
+          <textarea id="work-prompt" rows="3" maxlength="2000" spellcheck="false">Help me improve my product’s onboarding.</textarea>
+          <div class="prompt-actions"><button id="preview-prompt" type="button">View full prompt</button><button id="copy-prompt" type="button"><span class="copy-label">Copy prompt</span><svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.3"/><path d="M12 4V3H3v9h1" stroke="currentColor" stroke-width="1.3"/></svg></button></div>
+        </div>
+        <p class="instruction">Paste into ChatGPT or Claude. Your team comes with you.</p>
+        <p id="copy-status" class="copy-status" role="status" aria-live="polite"></p>
+      </section>
+    </div>
     <section class="humans" aria-labelledby="pick-title">
-      <h2 id="pick-title">Pick your humans.</h2>
+      <h2 id="pick-title">Pick your minds.</h2>
       <div class="human-list" id="human-list"></div>
-      <form id="custom-form" class="custom-form">
-        <label for="custom-name">Anyone. Your friend. Your father.</label>
-        <div class="custom-input"><input id="custom-name" name="name" placeholder="Add a name…" aria-label="Name of any human you want to learn from" maxlength="80" autocomplete="off" required><button type="submit" aria-label="Add this human">↵</button></div>
+      <form id="custom-form" class="custom-form" hidden>
+        <label class="sr-only" for="custom-name">Name of your inspiration</label>
+        <input id="custom-name" name="name" placeholder="Who inspires you?" aria-label="Name of your inspiration" maxlength="80" autocomplete="off" required>
+        <button type="submit" aria-label="Add this human">Add ↵</button>
+        <button id="cancel-custom" type="button" aria-label="Cancel adding a human">×</button>
       </form>
       <div id="custom-humans" class="custom-humans" aria-label="People you added"></div>
       <p id="custom-status" class="sr-only" role="status"></p>
     </section>
-    </div>
   </main>
-  <footer><span>Free & open source.</span><div><a href="human-machine-skills.zip" download>Get the skills ↓</a><button id="about-button">About</button></div></footer>
-
-  <dialog id="prompt-dialog" aria-labelledby="prompt-title"><button class="close-dialog" aria-label="Close prompt">×</button><h2 id="prompt-title">Your prompt.</h2><p>Copy this text, then paste it into your AI.</p><textarea id="full-prompt" readonly rows="11" aria-label="Human Machine starter prompt"></textarea></dialog>
-  <dialog id="about-dialog" aria-labelledby="about-title"><button class="close-dialog" aria-label="Close about">×</button><h2 id="about-title">Human Machine.</h2><p>Open-source skills for learning from people, mixing their ideas with your experience, and keeping what helps.</p><p>Pick anyone. For public figures, your AI checks public sources. For people you know, bring the words, notes or lessons you’re comfortable sharing.</p><p>Copy installs the skill when your AI has project file access, or starts the workflow in a regular chat. Your picks stay on this browser until you copy them into your AI.</p><p>For ongoing source collection and GBrain memory, <a href="https://github.com/LudoGranger/human-machine#install" target="_blank" rel="noreferrer">run the local app ↗</a>. Research and memory depend on your connected tools. Model and provider costs may apply.</p><p class="fine-print">Independent interpretations, without affiliation or endorsement. “Stocks” means researching public signals, not a promise of returns.</p><p class="fine-print">Sam Altman photo: Steve Jennings/Getty Images for TechCrunch; crop by James Tamim. <a href="https://commons.wikimedia.org/wiki/File:Sam_Altman_CropEdit_James_Tamim.jpg" target="_blank" rel="noreferrer">Source</a> · <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noreferrer">CC BY 2.0</a>. Displayed cropped and in grayscale.</p></dialog>
-  <noscript><p class="no-script">Download the skill pack below, or enable JavaScript to copy a personalized prompt.</p></noscript>
+  <footer><a href="human-machine-skills.zip" download>Skills ↓</a><button id="about-button">About</button></footer>
+  <dialog id="prompt-dialog" aria-labelledby="prompt-title"><button class="close-dialog" aria-label="Close prompt">×</button><h2 id="prompt-title">Your full prompt.</h2><p>Your work, your team, and the instructions your AI needs. This is exactly what Copy prompt copies.</p><textarea id="full-prompt" readonly rows="11" aria-label="Human Machine full prompt"></textarea></dialog>
+  <dialog id="about-dialog" aria-labelledby="about-title"><button class="close-dialog" aria-label="Close about">×</button><h2 id="about-title">Human Machine.</h2><p>Learn from people, mix their ideas with your experience, and keep what helps.</p><p>The copied prompt brings your task and chosen perspectives into ChatGPT or Claude. Public sources support each perspective; people you know need material you provide. These are independent interpretations, without affiliation or endorsement.</p><p>In a regular chat, the workflow runs in that conversation. In Claude Code or Codex with project file access, the prompt also sets up the reusable skill. Your picks and draft stay in this browser until you copy them.</p><p>For ongoing source collection and memory, <a href="https://github.com/LudoGranger/human-machine#install" target="_blank" rel="noreferrer">run the local app ↗</a>. Research and memory depend on connected tools. Model and provider costs may apply. The code is MIT-licensed.</p><p class="fine-print">“Stocks” means researching public signals, not a promise of returns. Sam’s pixel portrait is adapted from a photograph by Steve Jennings/Getty Images for TechCrunch, cropped by James Tamim. <a href="https://commons.wikimedia.org/wiki/File:Sam_Altman_CropEdit_James_Tamim.jpg" target="_blank" rel="noreferrer">Source</a> · <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noreferrer">CC BY 2.0</a>.</p></dialog>
+  <noscript><p class="no-script">Download the skills below, or enable JavaScript to build your prompt.</p></noscript>
 </body>
 </html>

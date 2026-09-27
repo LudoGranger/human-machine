@@ -14,7 +14,7 @@ Treat `/hm` as the start of a conversation, not a menu of commands. Use the curr
 Accept ordinary language after `/hm`. These are shortcuts, not required syntax:
 
 - `/hm pick Brian Chesky for design` — add a human and their role.
-- `/hm latest` — catch up on relevant new public material.
+- `/hm catch up` (or `/hm latest`) — catch up on relevant new public material.
 - `/hm ask` — critique the current work or help draft it.
 - `/hm compare` — preserve the original and show concrete alternatives under the same constraints.
 - `/hm mix` — combine selected methods with the user's experience and voice.

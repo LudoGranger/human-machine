@@ -4,7 +4,7 @@ Build an evolving version of yourself, shaped by the humans you pick.
 
 ## Start with one prompt
 
-Open [Human Machine](https://ludogranger.github.io/human-machine/), pick your humans, and copy the setup prompt into your AI. An agent with project file access can install the self-contained `hm` skill. A regular chat can follow the workflow conversationally; it cannot claim to install a skill or retain memory without tools.
+Open [Human Machine](https://ludogranger.github.io/human-machine/), pick your humans, edit the work you want help with, and copy the full prompt into your AI. **View full prompt** shows exactly what will be copied: your task, your team and the skill instructions. An agent with project file access can install the self-contained `hm` skill. A regular chat can follow the workflow conversationally; it cannot claim to install a skill or retain memory without tools.
 
 ## Install the downloaded skill pack
 
@@ -22,12 +22,16 @@ For Codex, target your project's `.agents/skills` directory and invoke `$hm` or 
 
 ## One entry point, ordinary requests
 
-- `/hm pick Brian Chesky for design and Garry Tan for startups`
-- `/hm what have my humans shared that matters for this project?`
-- `/hm give me feedback on this brief`
-- `/hm compare their approaches with my version`
-- `/hm mix the changes I chose with my own style`
-- `/hm keep this lesson — here is what happened when I tried it`
+| Action | Example |
+|---|---|
+| Pick | `/hm pick Brian Chesky for design and Garry Tan for early stage` |
+| Catch up | `/hm catch up on what my team has shared that matters for this project` |
+| Ask | `/hm ask Brian for feedback on this brief` |
+| Compare | `/hm compare their approaches with my version` |
+| Mix | `/hm mix Brian’s design principles and Garry’s startup advice with my own style` |
+| Keep | `/hm keep this lesson — here is what happened when I tried it` |
+
+These are skill requests to your AI, not terminal commands. Codex uses `$hm` in place of `/hm`. `/hm latest` is also accepted for Catch up. Ordinary language works too.
 
 Pick anyone, including a friend, your father or yourself. For private people, bring the words, advice, stories or notes you choose to share. The skill does not find private profiles or invent their views. Several humans are evidence-based perspectives, not the actual people or their endorsement.
 

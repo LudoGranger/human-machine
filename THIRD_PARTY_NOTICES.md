@@ -46,4 +46,4 @@ Permanent Marker by Font Diner is bundled in `site/assets/marker.ttf` under the 
 
 ## Sam Altman photograph
 
-`site/assets/sam-altman.jpg`: Steve Jennings/Getty Images for TechCrunch, crop by James Tamim. [Source](https://commons.wikimedia.org/wiki/File:Sam_Altman_CropEdit_James_Tamim.jpg), [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/). The source thumbnail is unchanged; CSS displays it cropped and in grayscale. This photograph is not included under the repository's MIT license.
+`site/assets/sam-altman.jpg`: Steve Jennings/Getty Images for TechCrunch, crop by James Tamim. [Source](https://commons.wikimedia.org/wiki/File:Sam_Altman_CropEdit_James_Tamim.jpg), [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/). The source thumbnail is unchanged. The displayed `site/assets/sam-altman-pixel.png` is an AI-assisted pixel-art adaptation with a transparent background, simplified clothing and no microphone. Source and adaptation retain this attribution and CC BY 2.0 notice and are not included under the repository's MIT license. The generation prompt and method are documented in [docs/ILLUSTRATIONS.md](docs/ILLUSTRATIONS.md).
