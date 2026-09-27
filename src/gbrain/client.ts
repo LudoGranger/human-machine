@@ -118,7 +118,7 @@ export async function ensureLocalBrain(layer: Layer): Promise<void> {
   const home = layerHome(layer);
   if (existsSync(join(home, ".gbrain", "config.json"))) return;
   mkdirSync(home, { recursive: true, mode: 0o700 });
-  await run(layer, ["init", "--pglite", "--no-embedding"], undefined, 180_000);
+  await run(layer, ["init", "--pglite", "--no-embedding", "--db-only"], undefined, 180_000);
 }
 
 // --- Remote MCP backend (hosted GBrain) --------------------------------------
