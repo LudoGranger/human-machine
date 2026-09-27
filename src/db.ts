@@ -364,6 +364,14 @@ const MIGRATIONS: string[] = [
     UNIQUE(user_ns, idempotency_key)
   );
   `,
+  `
+  -- Restricted sources (e.g. YC Bookface via the user's own YC CLI login):
+  -- visible to the local user only; never synced to the public brain,
+  -- skill exports, QM recall or shared workspaces.
+  ALTER TABLE items ADD COLUMN restricted INTEGER NOT NULL DEFAULT 0;
+  ALTER TABLE claims ADD COLUMN restricted INTEGER NOT NULL DEFAULT 0;
+  ALTER TABLE rules ADD COLUMN restricted INTEGER NOT NULL DEFAULT 0;
+  `,
 ];
 
 function migrate(d: Database) {
