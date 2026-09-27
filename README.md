@@ -2,7 +2,35 @@
 
 **Build an evolving version of yourself, shaped by the humans you pick.**
 
-Pick your humans. Start with **`/hm`** in Claude Code after installing the skill. Ask for feedback, compare alternatives, mix selected methods with your own experience, and keep what helps.
+Pick your team, bring your work, and take both into your AI. [Build your prompt →](https://ludogranger.github.io/human-machine/)
+
+## Your six actions
+
+One entry point: **`/hm`**. These are requests to your AI after installing the skill in Claude Code. In Codex use **`$hm`** instead; in a regular ChatGPT or Claude chat, start with the full prompt from the website. They are not terminal commands.
+
+| Action | What it does | Try it |
+|---|---|---|
+| [Pick](skills/human-machine-pick/SKILL.md) | Choose people and their roles in your team. | `/hm pick Brian Chesky for design and Garry Tan for early stage` |
+| [Catch up](skills/human-machine-catch-up/SKILL.md) | Find their latest relevant public ideas, with sources and dates. | `/hm catch up on what my team has shared about building with AI` |
+| [Ask](skills/human-machine-ask/SKILL.md) | Get feedback or draft work using their documented methods. | `/hm ask Brian to review this onboarding flow` |
+| [Compare](skills/human-machine-compare/SKILL.md) | See your original alongside alternatives and decide what to use. | `/hm compare my landing page with an approach informed by Brian` |
+| [Mix](skills/human-machine-mix/SKILL.md) | Blend selected methods with your own experience and voice. | `/hm mix Brian’s design principles and Garry’s startup advice with my approach` |
+| [Keep](skills/human-machine-keep/SKILL.md) | Save a lesson you choose, its context and what happened when you tried it. | `/hm keep this lesson: reducing onboarding to one step improved activation` |
+
+### Try Mix
+
+```text
+/hm mix Brian Chesky’s design principles with my own approach.
+Here is my onboarding flow: [paste it].
+Keep my tone and constraints. Show each proposed change and its source.
+Let me accept, adapt or reject it before changing my version.
+```
+
+The humans are source-backed perspectives. Your choices, corrections and results shape your evolving practice. Persistent Keep needs a connected private memory tool; otherwise you get a note to save.
+
+**[Set up /hm](docs/SKILLS.md)** · **[Read the entry skill](skills/hm/SKILL.md)** · **[Get the skill pack](https://ludogranger.github.io/human-machine/human-machine-skills.zip)**
+
+## The local application
 
 The [website](https://ludogranger.github.io/human-machine/) gives you one setup prompt to copy into your AI. Pick several public figures, or bring your own material from a friend, parent or colleague. The conversational skill supports those private perspectives; the backend's automated research currently targets public figures. See [skill installation and supported hosts](docs/SKILLS.md).
 

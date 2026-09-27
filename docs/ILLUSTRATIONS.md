@@ -1,10 +1,14 @@
 # Portrait assets
 
-The picker uses the earlier generated pixel-portrait sheet in `site/assets/humans.png` and a matching extension in `site/assets/humans-obama-karpathy.png`. Sam Altman's generated likeness was replaced with the credited photograph below.
+The picker uses the earlier generated pixel-portrait sheet in `site/assets/humans.png` and a matching extension in `site/assets/humans-obama-karpathy.png`. Sam Altman now uses `site/assets/sam-altman-pixel.png`, a matching pixel portrait derived from the credited photograph below. The original inaccurate sprite is not used for Sam.
 
 ## Sam Altman photograph
 
-`site/assets/sam-altman.jpg`: Sam Altman at TechCrunch Disrupt San Francisco 2019, photographed by Steve Jennings/Getty Images for TechCrunch; crop by James Tamim. [Source on Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Sam_Altman_CropEdit_James_Tamim.jpg), [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/). The downloaded 250px thumbnail is unchanged; the site displays it cropped and in grayscale using CSS. This asset is covered by its own license, not the repository's MIT license.
+`site/assets/sam-altman.jpg`: Sam Altman at TechCrunch Disrupt San Francisco 2019, photographed by Steve Jennings/Getty Images for TechCrunch; crop by James Tamim. [Source on Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Sam_Altman_CropEdit_James_Tamim.jpg), [CC BY 2.0](https://creativecommons.org/licenses/by/2.0/). The downloaded 250px thumbnail is retained unchanged as a reference. The displayed adaptation `site/assets/sam-altman-pixel.png` changes the medium to monochrome pixel art, removes the background and microphone, and simplifies the clothing. It was produced with the built-in image generation tool; the resulting PNG and alpha channel are unchanged. Both source and adaptation retain the attribution and CC BY 2.0 notice; they are not included under the repository's MIT license.
+
+## Sam portrait prompt (built-in tool)
+
+Use case: style-transfer with identity-preserve. Create a single square head-and-upper-shoulders avatar of SAM ALTMAN for a website human picker. Input 1 is the identity reference photograph of Sam Altman: preserve his exact recognizable face, wavy dark hair, long nose, expressive eyes, facial proportions and slight three-quarter gaze. Input 2 is ONLY a style reference for the monochrome retro pixel-art portraits, NOT an identity reference. Render the person from input 1 in the crisp black, grey and warm off-white pixel/dither illustration style of input 2. Do not use any face from input 2. Center Sam with the entire hair silhouette visible, 7 percent padding above, head filling about 70 percent of width, upper shoulders cropped at the bottom. Simple dark crewneck. No microphone, text, frames, crosses, logos or objects. Transparent background with genuine alpha, no checkerboard painted into the image. Output only one portrait, not a sheet.
 
 The extension was created with the built-in image generation tool, using the first sheet as a style reference. The PNG is retained unchanged, including its alpha channel; CSS positions each portrait within its own selector. These are stylized illustrations, not photographs or endorsements.
 
