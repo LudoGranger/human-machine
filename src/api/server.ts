@@ -12,6 +12,7 @@ import { GOALS } from "../schema.ts";
 import { exportSkill, listSkillVersions, rollbackSkill } from "../export/skill.ts";
 import { listExperiments } from "../eval/experiment.ts";
 import { getDb } from "../db.ts";
+import { handleQmMcp, mintToken } from "../qm.ts";
 
 const LOCAL_USER = "local";
 
@@ -45,6 +46,14 @@ export async function route(req: Request): Promise<Response> {
   const url = new URL(req.url);
   const path = url.pathname;
   const m = (re: RegExp) => path.match(re);
+
+  // ---- QM memory provider (OAuth2 client credentials + MCP JSON-RPC) --------
+  if (path === "/token" && req.method === "POST") {
+    const form = new URLSearchParams(await req.text());
+    const r = mintToken(form);
+    return json(r.body, r.status);
+  }
+  if (path === "/mcp" && req.method === "POST") return handleQmMcp(req);
 
   // ---- Agent API (read-only, bearer token → user) -------------------------
   if (path.startsWith("/agent/v1/")) {

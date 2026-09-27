@@ -175,6 +175,22 @@ async function main() {
     case "mcp":
       await runMcp();
       break;
+    case "qm-client": {
+      const { createQmClient, qmProviderConfig } = await import("./qm.ts");
+      app.ensureUser();
+      const ro = createQmClient("local", `${pos[0] ?? "qm"} (read)`, false);
+      const rw = createQmClient("local", `${pos[0] ?? "qm"} (keep)`, true);
+      const f = join(dataDir(), "qm-client.env");
+      writeFileSync(
+        f,
+        `HM_QM_RO_CLIENT_ID=${ro.clientId}\nHM_QM_RO_CLIENT_SECRET=${ro.secret}\nHM_QM_RW_CLIENT_ID=${rw.clientId}\nHM_QM_RW_CLIENT_SECRET=${rw.secret}\n`,
+        { mode: 0o600 },
+      );
+      const base = args[args.indexOf("--url") + 1] && flag("--url") ? args[args.indexOf("--url") + 1] : `http://${config.host()}:${config.port()}`;
+      console.log(`QM client credentials written to ${f} (mode 600) — add them to QM's secret store, never to Git.`);
+      console.log("MEMORY_PROVIDER_CONFIG=" + JSON.stringify(qmProviderConfig(base)));
+      break;
+    }
     case "collab": {
       const { collabPublish, collabInbox, collabReply } = await import("./collab.ts");
       if (pos[0] === "publish") console.log("published:", (await collabPublish()).join(", "));
@@ -195,6 +211,7 @@ async function main() {
   export-skill <person-id> [--install user|<project-dir>]
   eval <person-id>           run the 3-arm workflow experiment
   brain-search <person-id> <query>
+  qm-client [label] [--url U]  OAuth client credentials + MEMORY_PROVIDER_CONFIG for QM
   collab publish|inbox|reply  share API contract/status with other agents via the hosted GBrain
   status | doctor | mcp`);
   }
