@@ -4,7 +4,7 @@ Build an evolving version of yourself, shaped by the humans you pick.
 
 ## Start with one prompt
 
-Open [Human Machine](https://ludogranger.github.io/human-machine/), pick your humans, edit the work you want help with, and copy the full prompt into your AI. **View full prompt** shows exactly what will be copied: your task, your team and the skill instructions. An agent with project file access can install the self-contained `hm` skill. A regular chat can follow the workflow conversationally; it cannot claim to install a skill or retain memory without tools.
+Open [Human Machine](https://ludogranger.github.io/human-machine/), pick your humans, edit the work you want help with, and select your AI. Click **Add to ChatGPT**, **Add to Claude**, or the matching agent button to copy the full setup, then paste it into that AI. **View full prompt** shows exactly what will be copied: your task, your team and the skill instructions. An agent with project file access can install the self-contained `hm` skill. A regular chat can follow the workflow conversationally; it cannot claim to install a skill or retain memory without tools.
 
 ## Install the downloaded skill pack
 
