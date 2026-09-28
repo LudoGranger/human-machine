@@ -50,3 +50,23 @@ Put TLS in front (Caddy/nginx). Frontends authenticate with `Authorization: Bear
 - Jobs are durable: restarts re-queue jobs left running by a dead worker; idempotency keys prevent duplicate analysis.
 - Back up `HM_DATA_DIR` (SQLite + GBrain brains). It contains collected material and private user memory: keep it private.
 - Costs: the VPS, plus model usage (bounded by `HM_LLM_DAILY_BUDGET_USD`) and any paid source APIs.
+
+## Fly.io (Dockerfile + fly.toml in the repo)
+
+Fly builds the image remotely, so Docker is not needed on your computer.
+
+```bash
+fly launch --copy-config --no-deploy --name <your-app>   # keeps fly.toml, creates the app + hm_data volume
+fly secrets set ANTHROPIC_API_KEY=... HM_UI_TOKEN=$(openssl rand -hex 32)
+fly deploy --remote-only
+curl https://<your-app>.fly.dev/healthz                  # {"ok":true}
+```
+
+The Claude Code CLI provider needs an interactive login, so a server uses `ANTHROPIC_API_KEY` (paid per use, capped by `HM_LLM_DAILY_BUDGET_USD`). Data, brains and `/data/.env` live on the `hm_data` volume; `/healthz` is the only unauthenticated endpoint besides the QM `/token` + `/mcp` provider (client credentials) and the agent API (bearer token).
+
+For QM, create its client credentials **on the server** so they are registered in the server's database, then copy the printed values into QM's `.env`:
+
+```bash
+fly ssh console -C "bun run src/cli.ts qm-client qm-web --url https://<your-app>.fly.dev"
+fly ssh console -C "cat /data/qm-client.env"
+```
