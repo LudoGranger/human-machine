@@ -24,3 +24,13 @@ dialog{width:min(640px,calc(100% - 36px));padding:35px;border:1px solid #c9c9c3;
 
 /* About: product story and the README's learning loop. */
 #about-dialog{width:min(680px,calc(100% - 36px))}#about-dialog .about-lead{font-size:17px;line-height:1.5;color:var(--ink);letter-spacing:-.025em;margin-top:0}.about-questions{display:grid;grid-template-columns:1fr 1fr;gap:10px 20px;padding:17px 0;margin:20px 0;list-style:none;border-block:1px solid var(--line);font-size:13px;line-height:1.5;letter-spacing:-.015em;color:var(--ink)}.about-links{display:flex;flex-wrap:wrap;gap:8px 22px}.about-credits{margin-top:22px;border-top:1px solid var(--line);padding-top:15px}.about-credits summary{font-size:11px;color:var(--muted);cursor:pointer}.about-credits .fine-print:first-of-type{margin-top:15px}.about-credits p:last-child{margin-bottom:0}@media(max-width:420px){.about-questions{grid-template-columns:1fr;gap:7px}#about-dialog .about-lead{font-size:16px}}
+
+/* Setup handoff: one clear action, with the full instructions available to inspect. */
+.setup-panel{margin-top:16px;padding:18px;border:1px solid #30302e;border-radius:20px;background:#141413;color:#f7f7f5;box-shadow:0 2px 0 #00000010}
+.setup-panel h2{margin:0 0 15px;text-align:center;font-size:14px;font-weight:500;letter-spacing:-.015em}
+.setup-command{display:flex;align-items:center;gap:16px;padding:12px 12px 12px 18px;background:#252524;border:1px solid #383836;border-radius:12px}
+.setup-text{flex:1;min-width:0;font:13px/1.6 var(--mono);letter-spacing:-.02em}
+.setup-panel #copy-prompt{flex-shrink:0;min-height:48px;min-width:84px;padding:12px 20px;border:0;border-radius:9px;background:#f7f7f5;color:#202020;font:14px/1.4 var(--mono)}
+.setup-panel #copy-prompt:hover:not(:disabled){background:#deded8}.setup-panel #copy-prompt:disabled{opacity:.45;cursor:default}.setup-panel #copy-prompt:focus-visible{outline-color:#fff}
+.setup-help{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-top:10px}.setup-help .instruction{margin:0;font-size:10px}.setup-help #preview-prompt{border:0;font-size:10px;white-space:nowrap;padding:5px 0}
+@media(max-width:520px){.setup-panel{padding:14px;border-radius:16px}.setup-command{gap:10px;padding:10px 10px 10px 12px}.setup-text{font-size:12px}.setup-panel #copy-prompt{min-width:70px;padding:12px 14px}.setup-help{flex-wrap:wrap;gap:2px 12px}}
