@@ -72,6 +72,14 @@ export async function route(req: Request): Promise<Response> {
     }
     if (req.method !== "GET") return err(405, "method not allowed");
     if (path === "/agent/v1/keeps") return json(app.agentListKeeps(userId, url.searchParams.get("q") ?? undefined));
+    if (path === "/agent/v1/brief") {
+      const { buildBrief, briefMarkdown, latestBrief } = await import("../pipeline/brief.ts");
+      const saved = latestBrief(userId);
+      if (saved) return json({ ...saved, saved: true });
+      // No brief yet: show what it would say now, without saving it.
+      const b = buildBrief(userId);
+      return json({ ...b, markdown: briefMarkdown(b), saved: false });
+    }
     const person = url.searchParams.get("person") ?? "";
     if (path === "/agent/v1/context") {
       const ctx = await app.agentContext(userId, person, url.searchParams.get("goal") ?? undefined);
