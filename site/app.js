@@ -62,7 +62,7 @@
     copyButton.disabled = !hasWork;
     document.querySelector('#preview-prompt').disabled = !hasWork;
     copyStatus.textContent = hasWork ? '' : 'Add a task to build your prompt.';
-    copyButton.querySelector('.copy-label').textContent = 'Create skill';
+    copyButton.querySelector('.copy-label').textContent = 'Copy';
   }
   function toggle(id) { picked.has(id) ? picked.delete(id) : picked.add(id); persist(); update(); }
   function makePerson(h, isCustom = false) {
