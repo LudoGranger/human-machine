@@ -83,6 +83,11 @@ async function handle(job: Job, streamHandle: StreamHandle | null): Promise<unkn
     }
     case "cards":
       return generateCards(p.userId, p.personId);
+    case "brief": {
+      const { runBrief } = await import("../pipeline/brief.ts");
+      const b = await runBrief(p.userId);
+      return { slug: b.slug, quiet: b.quiet, people: b.people.length };
+    }
   }
 }
 
@@ -161,6 +166,15 @@ async function collectSource(sourceId: string, job: Job, streamHandle: StreamHan
   }
 }
 
+// One morning brief per user per day (HM_BRIEF_HOUR, local time).
+export async function scheduleBriefsAsync() {
+  const { dueBriefUsers, briefDate } = await import("../pipeline/brief.ts");
+  for (const u of dueBriefUsers()) enqueue("brief", { userId: u }, { key: `brief:${u}:${briefDate()}` });
+}
+function scheduleBriefs() {
+  scheduleBriefsAsync().catch((e) => console.error("brief scheduler", e));
+}
+
 export function scheduleDueSources() {
   const db = getDb();
   const due = db
@@ -219,6 +233,7 @@ export async function runWorker(opts: { once?: boolean; concurrency?: number; si
         try {
           recoverExpiredLeases();
           scheduleDueSources();
+          scheduleBriefs();
         } catch (e) {
           console.error("scheduler", e);
         }

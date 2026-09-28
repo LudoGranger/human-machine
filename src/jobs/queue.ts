@@ -3,7 +3,7 @@
 // exponentially (or honor a provider's Retry-After), and jobs can be cancelled.
 import { getDb, now } from "../db.ts";
 
-export type JobKind = "resolve" | "discover" | "collect" | "analyze" | "gbrain_item" | "profile" | "cards";
+export type JobKind = "resolve" | "discover" | "collect" | "analyze" | "gbrain_item" | "profile" | "cards" | "brief";
 
 export interface Job {
   id: number;

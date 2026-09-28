@@ -117,6 +117,15 @@ async function main() {
       console.log(`following ${personId} for ${goal}`);
       break;
     }
+    case "brief": {
+      const { runBrief } = await import("./pipeline/brief.ts");
+      getDb();
+      app.ensureUser();
+      const b = await runBrief("local");
+      console.log(b.markdown);
+      console.error(`\nsaved to your private GBrain brain as ${b.slug}`);
+      break;
+    }
     case "cards": {
       console.log(JSON.stringify(await generateCards("local", pos[0]), null, 1));
       break;
@@ -286,6 +295,7 @@ async function main() {
   research <name> [--wait]   resolve identity, discover sources, collect, analyze
   follow <person-id> <goal>  goals: building_with_ai product_decisions research communication market_policy
   cards <person-id>          generate learning cards now
+  brief                      write today's morning brief now (also daily at HM_BRIEF_HOUR, default 7)
   agent-token                create a read-only token for desktop agents
   connect exa                add your own Exa API key (stdin) as a web search source
   connect gbrain [--url U]   use your own hosted GBrain workspace (token from stdin, verified)

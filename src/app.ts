@@ -247,7 +247,7 @@ export function recentChanges(personId: string, since: string, limit = 50, inclu
   const db = getDb();
   return (db
     .query(
-      `SELECT ce.id, ce.classification, ce.summary, ce.interpretation, ce.stale, ce.stale_reason, ce.analyzed_at, ce.passage_ids,
+      `SELECT ce.id, ce.classification, ce.summary, ce.interpretation, ce.usefulness, ce.stale, ce.stale_reason, ce.analyzed_at, ce.passage_ids,
         i.url, i.title, i.relation, i.attribution, i.occurred_at, i.published_at, i.discovered_at, i.restricted, c.topic
        FROM change_events ce JOIN items i ON i.id = ce.item_id LEFT JOIN claims c ON c.id = ce.claim_id
        WHERE ce.person_id = ? AND ce.analyzed_at > ? ${includeRestricted ? "" : "AND i.restricted = 0"} ORDER BY ce.analyzed_at DESC LIMIT ?`,
