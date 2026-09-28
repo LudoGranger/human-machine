@@ -27,6 +27,7 @@ const ENV_TEMPLATE = `# Human Machine local configuration (mode 600). Never comm
 # X_BEARER_TOKEN=                   # X API (paid) — enables the X adapter
 # GITHUB_TOKEN=                     # optional, higher GitHub REST limits
 # GOOGLE_BOOKS_API_KEY=
+# EXA_API_KEY=                      # your Exa account — web search source (run: hm connect exa)
 # Optional hosted GBrain workspace for the PUBLIC evidence layer:
 # GBRAIN_REMOTE_URL=
 # GBRAIN_REMOTE_TOKEN=
@@ -129,6 +130,31 @@ async function main() {
       console.log(`${flag("--write") ? "read + keep/pick" : "read-only"} agent token written to ${f} (mode 600)`);
       break;
     }
+    case "connect": {
+      const { CONNECTABLE, rediscoverAll, validKeyShape, verifyExaKey, writeEnvValue } = await import("./connect.ts");
+      const service = CONNECTABLE[pos[0]];
+      if (!service) throw new Error(`usage: hm connect <${Object.keys(CONNECTABLE).join("|")}> [--remove] [--no-verify]  (key read from stdin)`);
+      if (flag("--remove")) {
+        const f = writeEnvValue(service.envVar, null);
+        console.log(`${service.envVar} removed from ${f}; ${pos[0]} sources will show Access required`);
+        break;
+      }
+      if (process.stdin.isTTY) process.stdout.write(`Paste your ${pos[0]} API key (from ${service.signup}) and press Enter: `);
+      const key = ((await Bun.stdin.text()).split("\n")[0] ?? "").trim();
+      if (!validKeyShape(key)) throw new Error("that does not look like an API key; nothing was saved");
+      if (!flag("--no-verify")) {
+        try {
+          await verifyExaKey(key);
+        } catch (e) {
+          throw new Error(`${pos[0]} rejected the key (${(e as Error).message.slice(0, 120)}); nothing was saved`);
+        }
+      }
+      const f = writeEnvValue(service.envVar, key);
+      getDb();
+      const n = rediscoverAll();
+      console.log(`${pos[0]} connected${flag("--no-verify") ? " (not verified)" : " and verified"}; key saved to ${f} (mode 600). Discovery queued for ${n} people; run the worker to collect.`);
+      break;
+    }
     case "export-skill": {
       const r = await exportSkill("local", pos[0]);
       console.log(`skill ${r.manifest.name} v${r.version}${r.unchanged ? " (unchanged)" : ""} at ${r.path}`);
@@ -160,6 +186,7 @@ async function main() {
       checks.claude_cli = Bun.which("claude") ? "found" : "not found";
       checks.llm_provider = config.llmProvider();
       checks.x_api = config.xBearer() ? "token set" : "not configured (X sources: Access required)";
+      checks.exa = config.exaKey() ? "key set" : "not configured (web search: Access required; run `hm connect exa`)";
       checks.gbrain_remote = remoteConfigured() ? "configured" : "not configured (local brains)";
       if (remoteConfigured()) {
         try {
@@ -208,6 +235,7 @@ async function main() {
   follow <person-id> <goal>  goals: building_with_ai product_decisions research communication market_policy
   cards <person-id>          generate learning cards now
   agent-token                create a read-only token for desktop agents
+  connect exa [--remove]     add your own Exa API key (read from stdin) as a web search source
   export-skill <person-id> [--install user|<project-dir>]
   eval <person-id>           run the 3-arm workflow experiment
   brain-search <person-id> <query>

@@ -3,6 +3,7 @@ import { blogAdapter, newsAdapter, podcastAdapter, youtubeAdapter } from "./feed
 import { booksAdapter, federalRegisterAdapter, linkedinAdapter } from "./other.ts";
 import { xAdapter } from "./x.ts";
 import { bookfaceAdapter } from "./bookface.ts";
+import { exaAdapter } from "./exa.ts";
 import type { Adapter, PersonContext } from "./types.ts";
 import { getDb } from "../db.ts";
 
@@ -36,6 +37,7 @@ export const ADAPTERS: Adapter[] = [
   federalRegisterAdapter,
   linkedinAdapter,
   bookfaceAdapter,
+  exaAdapter,
   manualAdapter,
 ];
 
