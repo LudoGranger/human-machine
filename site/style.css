@@ -17,8 +17,7 @@ dialog{width:min(640px,calc(100% - 36px));padding:35px;border:1px solid #c9c9c3;
 
 /* Universal setup and repository social proof. */
 .github-link{display:flex;align-items:center;gap:12px}.github-stars{display:inline-flex;align-items:center;gap:5px;color:var(--ink);font-variant-numeric:tabular-nums}.github-link:hover{text-decoration:none}.github-link:hover>span:first-child{text-decoration:underline}
-.setup-heading{margin-bottom:14px}.setup-heading h2{margin:0;font-size:19px;font-weight:400;letter-spacing:-.035em}.inline-command{font-family:var(--mono);font-size:.85em;letter-spacing:-.06em}.prompt-box .task-label{font-size:10px;color:var(--muted);margin:17px 0 0}#work-prompt{padding-top:7px;min-height:54px}.instruction{display:block}.start{margin-top:28px}
-@media(max-width:520px){.setup-heading h2{font-size:18px}.instruction{font-size:10px}}
-@media(max-width:350px){.setup-heading h2{font-size:16px}}
+.prompt-box .task-label{font-size:10px;color:var(--muted);margin:17px 0 0}#work-prompt{padding-top:7px;min-height:54px}.instruction{display:block}.start{margin-top:28px}
+@media(max-width:520px){.instruction{font-size:10px}}
 
 .usage-note{font-size:10px;color:var(--muted);margin:18px 0 0}
