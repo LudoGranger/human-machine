@@ -47,6 +47,9 @@ export async function route(req: Request): Promise<Response> {
   const path = url.pathname;
   const m = (re: RegExp) => path.match(re);
 
+  // Liveness only (no data), for the host's health checks.
+  if (path === "/healthz") return json({ ok: true });
+
   // ---- QM memory provider (OAuth2 client credentials + MCP JSON-RPC) --------
   if (path === "/token" && req.method === "POST") {
     const form = new URLSearchParams(await req.text());

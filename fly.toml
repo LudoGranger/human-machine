@@ -1,0 +1,36 @@
+# Human Machine backend on Fly.io. Set app/region with `fly launch --copy-config --no-deploy`.
+# Secrets (never in this file): fly secrets set ANTHROPIC_API_KEY=... HM_UI_TOKEN=...
+app = "human-machine"
+primary_region = "sjc"
+
+[build]
+
+[env]
+  HM_DATA_DIR = "/data"
+  HM_HOST = "0.0.0.0"
+  HM_PORT = "4747"
+  HM_LLM_PROVIDER = "anthropic"
+
+[[mounts]]
+  source = "hm_data"
+  destination = "/data"
+  initial_size = "3gb"
+
+[http_service]
+  internal_port = 4747
+  force_https = true
+  # The worker collects on a schedule: keep one machine running.
+  auto_stop_machines = "off"
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    grace_period = "30s"
+    interval = "30s"
+    method = "GET"
+    timeout = "5s"
+    path = "/healthz"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "1gb"
