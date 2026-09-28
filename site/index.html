@@ -10,9 +10,9 @@
   <title>Human Machine</title>
   <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/marker.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="stylesheet" href="style.css?v=20260927-copy-paste-1">
+  <link rel="stylesheet" href="style.css?v=20260927-portraits-2">
   <script src="skill-data.js?v=20260927-connected" defer></script>
-  <script src="app.js?v=20260927-copy-paste-1" defer></script>
+  <script src="app.js?v=20260927-portraits-2" defer></script>
 </head>
 <body>
   <header class="topbar"><a class="github-link" href="https://github.com/LudoGranger/human-machine" target="_blank" rel="noreferrer"><span>GitHub</span><span class="github-stars" id="github-stars" title="GitHub stars · checked September 27, 2026"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2-5.6-3-5.6 3 1.1-6.2L3 9.6l6.2-.9Z"/></svg><span id="star-count">0</span><span class="sr-only"> stars</span></span><span aria-hidden="true">↗</span></a></header>
@@ -28,9 +28,9 @@
           <div class="prompt-heading"><span class="command">/hm</span><span id="prompt-team">with Brian Chesky</span></div>
           <label class="task-label" for="work-prompt">What are you working on?</label>
           <textarea id="work-prompt" rows="1" maxlength="2000" spellcheck="true" aria-describedby="prompt-instruction">Help me improve my product’s onboarding.</textarea>
-          <div class="prompt-actions"><button id="preview-prompt" type="button">View full prompt</button><button id="copy-prompt" type="button" aria-describedby="prompt-instruction" title="Copy your task, team and instructions"><span class="copy-label">Copy prompt</span><svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.3"/><path d="M12 4V3H3v9h1" stroke="currentColor" stroke-width="1.3"/></svg></button></div>
+          <div class="prompt-actions"><button id="preview-prompt" type="button">View full prompt</button><button id="copy-prompt" type="button" aria-describedby="prompt-instruction" title="Copy your task, team and instructions"><span class="copy-label">Create skill</span><svg width="14" height="14" viewBox="0 0 20 20" fill="none" aria-hidden="true"><rect x="7" y="7" width="10" height="10" rx="1" stroke="currentColor" stroke-width="1.3"/><path d="M12 4V3H3v9h1" stroke="currentColor" stroke-width="1.3"/></svg></button></div>
         </div>
-        <p class="instruction" id="prompt-instruction">Paste into your AI.</p>
+        <p class="instruction" id="prompt-instruction">Copy and paste into your AI.</p>
         <p id="copy-status" class="copy-status" role="status" aria-live="polite"></p>
       </section>
     </div>
@@ -56,7 +56,7 @@
     <video id="launch-film" controls playsinline preload="none" poster="assets/launch-poster.png?v=20260927-v5-44s"><source src="assets/launch.mp4?v=20260927-v5-44s" type="video/mp4">Your browser does not support this video. <a href="assets/launch.mp4?v=20260927-v5-44s">Download the launch film.</a></video>
     <div class="film-footer"><span>44 seconds</span><a href="https://github.com/LudoGranger/human-machine/blob/main/docs/LAUNCH.md" target="_blank" rel="noreferrer">Sources &amp; credits ↗</a></div>
   </dialog>
-  <dialog id="prompt-dialog" aria-labelledby="prompt-title"><button class="close-dialog" aria-label="Close prompt">×</button><h2 id="prompt-title">Your full prompt.</h2><p>Your work, your team, and the instructions your AI needs. This is exactly what Copy prompt copies.</p><textarea id="full-prompt" readonly rows="11" aria-label="Human Machine full prompt"></textarea></dialog>
+  <dialog id="prompt-dialog" aria-labelledby="prompt-title"><button class="close-dialog" aria-label="Close prompt">×</button><h2 id="prompt-title">Your full prompt.</h2><p>Your work, your team, and the instructions your AI needs. This is exactly what Create skill copies.</p><textarea id="full-prompt" readonly rows="11" aria-label="Human Machine full prompt"></textarea></dialog>
   <dialog id="about-dialog" aria-labelledby="about-title"><button class="close-dialog" aria-label="Close about">×</button><h2 id="about-title">Human Machine.</h2><p>Bring fresh public ideas from your chosen humans into your work. Mix in your experience and feedback, then keep what helps your next task.</p><p>The copied prompt brings your task and chosen perspectives into whichever AI you use. Public sources support each perspective; people you know need material you provide. These are independent interpretations, without affiliation or endorsement.</p><p>In a regular chat, the workflow runs in that conversation. In Claude Code or Codex with project file access, the prompt also sets up the reusable skill. Your picks and draft stay in this browser until you copy them.</p><p>For ongoing source collection and memory, <a href="https://github.com/LudoGranger/human-machine#install" target="_blank" rel="noreferrer">run the local app ↗</a>. Research and memory depend on connected tools. Model and provider costs may apply. The code is MIT-licensed.</p><p class="fine-print">“Stocks” means researching public signals, not a promise of returns. Sam’s pixel portrait is adapted from a photograph by Steve Jennings/Getty Images for TechCrunch, cropped by James Tamim. <a href="https://commons.wikimedia.org/wiki/File:Sam_Altman_CropEdit_James_Tamim.jpg" target="_blank" rel="noreferrer">Source</a> · <a href="https://creativecommons.org/licenses/by/2.0/" target="_blank" rel="noreferrer">CC BY 2.0</a>.</p></dialog>
   <noscript><p class="no-script">Download the skills below, or enable JavaScript to build your prompt.</p></noscript>
 </body>

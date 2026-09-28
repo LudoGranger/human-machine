@@ -4,7 +4,7 @@ Build an evolving version of yourself, shaped by the humans you pick.
 
 ## Start with one prompt
 
-Open [Human Machine](https://ludogranger.github.io/human-machine/), pick your humans and edit the work you want help with. Click **Copy prompt**, then paste it into whichever AI you use. The same prompt adapts to the tools available in that conversation; no model selection is needed. **View full prompt** shows exactly what will be copied: your task, your team and the skill instructions. An agent with project file access can install the self-contained `hm` skill. A regular chat can follow the workflow conversationally; it cannot claim to install a skill or retain memory without tools.
+Open [Human Machine](https://ludogranger.github.io/human-machine/), pick your humans and edit the work you want help with. Click **Create skill** to copy the complete instructions, then paste them into whichever AI you use. The same prompt adapts to the tools available in that conversation; no model selection is needed. **View full prompt** shows exactly what will be copied: your task, your team and the skill instructions. An agent with project file access can install the self-contained `hm` skill. A regular chat can follow the workflow conversationally; it cannot claim to install a skill or retain memory without tools.
 
 ## Install the downloaded skill pack
 
