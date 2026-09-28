@@ -21,3 +21,6 @@ dialog{width:min(640px,calc(100% - 36px));padding:35px;border:1px solid #c9c9c3;
 @media(max-width:520px){.instruction{font-size:10px}}
 
 .usage-note{font-size:10px;color:var(--muted);margin:18px 0 0}
+
+/* About: product story and the README's learning loop. */
+#about-dialog{width:min(680px,calc(100% - 36px))}#about-dialog .about-lead{font-size:17px;line-height:1.5;color:var(--ink);letter-spacing:-.025em;margin-top:0}.about-questions{display:grid;grid-template-columns:1fr 1fr;gap:10px 20px;padding:17px 0;margin:20px 0;list-style:none;border-block:1px solid var(--line);font-size:13px;line-height:1.5;letter-spacing:-.015em;color:var(--ink)}.about-links{display:flex;flex-wrap:wrap;gap:8px 22px}.about-credits{margin-top:22px;border-top:1px solid var(--line);padding-top:15px}.about-credits summary{font-size:11px;color:var(--muted);cursor:pointer}.about-credits .fine-print:first-of-type{margin-top:15px}.about-credits p:last-child{margin-bottom:0}@media(max-width:420px){.about-questions{grid-template-columns:1fr;gap:7px}#about-dialog .about-lead{font-size:16px}}
