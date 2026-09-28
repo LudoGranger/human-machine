@@ -21,11 +21,19 @@
   const copyButton = document.querySelector('#copy-prompt');
   const copyStatus = document.querySelector('#copy-status');
   const workInput = document.querySelector('#work-prompt');
+  const hostSelect = document.querySelector('#ai-host');
+  const hosts = {
+    chatgpt: { name: 'ChatGPT', url: 'https://chatgpt.com/', command: '/hm', kind: 'chat' },
+    claude: { name: 'Claude', url: 'https://claude.ai/new', command: '/hm', kind: 'chat' },
+    'claude-code': { name: 'Claude Code', command: '/hm', kind: 'agent' },
+    codex: { name: 'Codex', command: '$hm', kind: 'agent' }
+  };
   let prompt = '';
   try {
     const raw = localStorage.getItem(storageKey);
     if (raw) {
       const saved = JSON.parse(raw);
+      if (Object.hasOwn(hosts, saved.host)) hostSelect.value = saved.host;
       if (typeof saved.work === 'string') workInput.value = saved.work.slice(0, 2000);
       if (Array.isArray(saved.custom)) custom = saved.custom.filter(h => h && typeof h.id === 'string' && /^custom-[\w-]+$/.test(h.id) && typeof h.name === 'string' && h.name.trim().length > 0 && h.name.length <= 80).slice(0, 20).map(h => ({ id: h.id, name: h.name.trim() }));
       if (Array.isArray(saved.picked)) picked = new Set(saved.picked.filter(id => knownIds.has(id) || custom.some(h => h.id === id)));
@@ -36,7 +44,7 @@
   } catch { /* Picks still work for this visit if browser storage is unavailable. */ }
 
   function persist() {
-    try { localStorage.setItem(storageKey, JSON.stringify({ picked: [...picked], custom, work: workInput.value })); }
+    try { localStorage.setItem(storageKey, JSON.stringify({ picked: [...picked], custom, work: workInput.value, host: hostSelect.value })); }
     catch { document.querySelector('#custom-status').textContent = 'Browser storage unavailable. Your choices work for this visit.'; }
   }
   function buildPrompt(selected) {
@@ -46,7 +54,8 @@
   }
   function update() {
     const selected = [...humans, ...custom].filter(h => picked.has(h.id));
-    prompt = `My task: ${workInput.value.trim()}\nMy team: ${selected.length ? selected.map(h => h.name).join(", ") : "Help me pick relevant people for this work"}\n\nSet up Human Machine, with /hm as its entry point.\n\nIf you can edit project files and support Agent Skills: create the self-contained skill below in the current project’s .claude/skills/hm/SKILL.md for Claude Code, or .agents/skills/hm/SKILL.md for Codex. Use the appropriate supported project skill location for another host. Preserve any existing different hm skill and report the conflict instead of overwriting it. If no project is selected, ask which project to use. Report the host’s actual invocation syntax: Claude Code uses /hm; Codex uses $hm or its skill picker. Do not claim installation or activation without checking it.\n\nIf this is a regular chat without file tools, use the following workflow in this conversation and treat /hm as my conversational shortcut. Do not claim to install anything.\n\nSKILL.md contents:\n\n${window.HM_SKILL_SOURCE}\n\nInitial request after setup:\n${buildPrompt(selected)}`;
+    const host = hosts[hostSelect.value];
+    prompt = `My AI: ${host.name}. ${host.kind === 'chat' ? 'Use this workflow in our conversation; do not claim to install software.' : 'Set up the skill in my current project using the supported host instructions below.'}\n\nMy task: ${workInput.value.trim()}\nMy team: ${selected.length ? selected.map(h => h.name).join(", ") : "Help me pick relevant people for this work"}\n\nSet up Human Machine, with /hm as its entry point.\n\nIf you can edit project files and support Agent Skills: create the self-contained skill below in the current project’s .claude/skills/hm/SKILL.md for Claude Code, or .agents/skills/hm/SKILL.md for Codex. Use the appropriate supported project skill location for another host. Preserve any existing different hm skill and report the conflict instead of overwriting it. If no project is selected, ask which project to use. Report the host’s actual invocation syntax: Claude Code uses /hm; Codex uses $hm or its skill picker. Do not claim installation or activation without checking it.\n\nIf this is a regular chat without file tools, use the following workflow in this conversation and treat /hm as my conversational shortcut. Do not claim to install anything.\n\nSKILL.md contents:\n\n${window.HM_SKILL_SOURCE}\n\nInitial request after setup:\n${buildPrompt(selected)}`;
     document.querySelector('#prompt-team').textContent = selected.length ? `with ${selected.map(h => h.name).join(' + ')}` : 'pick your team →';
     document.querySelector('#pick-count').textContent = `${selected.length} picked`;
     document.querySelectorAll('[data-person]').forEach(button => {
@@ -62,8 +71,12 @@
     copyButton.disabled = !hasWork;
     document.querySelector('#preview-prompt').disabled = !hasWork;
     copyStatus.textContent = hasWork ? '' : 'Add a task to build your prompt.';
-    copyButton.querySelector('.copy-label').textContent = 'Copy prompt';
+    copyButton.querySelector('.copy-label').textContent = `Add to ${host.name}`;
+    copyButton.title = `Copy the complete setup prompt for ${host.name}`;
+    document.querySelector('#prompt-instruction').textContent = `Copy the setup. Paste into ${host.name}. Start with ${host.command}.`;
+    document.querySelector('#open-ai').hidden = true;
   }
+  hostSelect.addEventListener('change', () => { persist(); update(); });
   function toggle(id) { picked.has(id) ? picked.delete(id) : picked.add(id); persist(); update(); }
   function makePerson(h, isCustom = false) {
     const button = document.createElement('button');
@@ -114,11 +127,20 @@
   }
   document.querySelector('#preview-prompt').addEventListener('click', previewPrompt);
   copyButton.addEventListener('click', async () => {
+    const hostId = hostSelect.value;
+    const host = hosts[hostId];
+    const copiedPrompt = prompt;
     try {
       if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
-      await navigator.clipboard.writeText(prompt);
+      await navigator.clipboard.writeText(copiedPrompt);
       copyButton.querySelector('.copy-label').textContent = 'Copied';
-      copyStatus.textContent = 'Task, team and instructions copied.';
+      copyStatus.textContent = `Copied. Paste into ${host.name} to start.`;
+      const openAI = document.querySelector('#open-ai');
+      if (host.url) {
+        openAI.href = host.url;
+        openAI.textContent = `Open ${host.name} ↗`;
+        openAI.hidden = false;
+      }
     } catch {
       previewPrompt();
     }
@@ -139,5 +161,19 @@
       if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) dialog.close();
     });
   });
+  async function refreshStars() {
+    const timeout = new AbortController();
+    const timer = setTimeout(() => timeout.abort(), 5000);
+    try {
+      const response = await fetch('https://api.github.com/repos/LudoGranger/human-machine', { signal: timeout.signal, credentials: 'omit', referrerPolicy: 'no-referrer' });
+      if (!response.ok) return;
+      const data = await response.json();
+      if (!Number.isSafeInteger(data.stargazers_count) || data.stargazers_count < 0) return;
+      document.querySelector('#star-count').textContent = new Intl.NumberFormat('en').format(data.stargazers_count);
+      document.querySelector('#github-stars').title = `GitHub stars · checked ${new Date().toLocaleDateString('en', { month: 'long', day: 'numeric', year: 'numeric' })}`;
+    } catch { /* The dated, verified count in the page remains visible if GitHub is unavailable. */ }
+    finally { clearTimeout(timer); }
+  }
   update();
+  refreshStars();
 })();
