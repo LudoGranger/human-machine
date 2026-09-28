@@ -131,27 +131,79 @@ async function main() {
       break;
     }
     case "connect": {
-      const { CONNECTABLE, rediscoverAll, validKeyShape, verifyExaKey, writeEnvValue } = await import("./connect.ts");
-      const service = CONNECTABLE[pos[0]];
-      if (!service) throw new Error(`usage: hm connect <${Object.keys(CONNECTABLE).join("|")}> [--remove] [--no-verify]  (key read from stdin)`);
-      if (flag("--remove")) {
-        const f = writeEnvValue(service.envVar, null);
-        console.log(`${service.envVar} removed from ${f}; ${pos[0]} sources will show Access required`);
+      const c = await import("./connect.ts");
+      const opt = (f: string) => (flag(f) ? args[args.indexOf(f) + 1] : undefined);
+      const readSecret = async (what: string) => {
+        const tty = !!process.stdin.isTTY;
+        if (tty) {
+          process.stdout.write(`Paste your ${what} and press Enter (hidden): `);
+          Bun.spawnSync(["stty", "-echo"], { stdin: "inherit" });
+        }
+        let v = "";
+        try {
+          // First line only: works for a paste + Enter and for `echo $TOKEN | hm connect ...`.
+          for await (const line of console) {
+            v = line.trim();
+            break;
+          }
+        } finally {
+          if (tty) {
+            Bun.spawnSync(["stty", "echo"], { stdin: "inherit" });
+            process.stdout.write("\n");
+          }
+        }
+        if (!c.validKeyShape(v)) throw new Error("that does not look like a key or token; nothing was saved");
+        return v;
+      };
+      if (pos[0] === "qm") {
+        // Your own QM deployment uses this backend as a memory provider.
+        const base = c.qmReachableUrl(opt("--url") ?? "");
+        const { createQmClient, qmProviderConfig } = await import("./qm.ts");
+        getDb();
+        app.ensureUser();
+        const ro = createQmClient("local", "qm (read)", false);
+        const rw = createQmClient("local", "qm (keep)", true);
+        const f = join(dataDir(), "qm-client.env");
+        writeFileSync(f, `HM_QM_RO_CLIENT_ID=${ro.clientId}\nHM_QM_RO_CLIENT_SECRET=${ro.secret}\nHM_QM_RW_CLIENT_ID=${rw.clientId}\nHM_QM_RW_CLIENT_SECRET=${rw.secret}\n`, { mode: 0o600 });
+        chmodSync(f, 0o600);
+        console.log(`QM client credentials written to ${f} (mode 600); they are registered in this backend's database.\n`);
+        console.log(c.qmSetupInstructions(base, f, qmProviderConfig(base)));
         break;
       }
-      if (process.stdin.isTTY) process.stdout.write(`Paste your ${pos[0]} API key (from ${service.signup}) and press Enter: `);
-      const key = ((await Bun.stdin.text()).split("\n")[0] ?? "").trim();
-      if (!validKeyShape(key)) throw new Error("that does not look like an API key; nothing was saved");
+      const service = c.CONNECTABLE[pos[0]];
+      if (!service) throw new Error("usage: hm connect exa | gbrain [--url U] | qm --url https://<your backend>   (keys and tokens are read from stdin; --remove disconnects exa/gbrain)");
+      if (flag("--remove")) {
+        const f = c.writeEnvValue(service.envVar, null);
+        if (pos[0] === "gbrain") c.writeEnvValue("GBRAIN_REMOTE_URL", null);
+        console.log(`${pos[0]} disconnected (${f})`);
+        break;
+      }
+      if (pos[0] === "gbrain") {
+        const url = opt("--url") ?? c.DEFAULT_GBRAIN_URL;
+        const token = await readSecret(`GBrain access token (${service.signup})`);
+        let r;
+        try {
+          r = await c.verifyGbrainWorkspace(url, token);
+        } catch (e) {
+          throw new Error(`the GBrain workspace check failed (${(e as Error).message.slice(0, 160)}); nothing was saved`);
+        }
+        c.writeEnvValue("GBRAIN_REMOTE_URL", url);
+        const f = c.writeEnvValue("GBRAIN_REMOTE_TOKEN", token);
+        console.log(`GBrain workspace connected: wrote and read back ${r.slug}; settings saved to ${f} (mode 600).`);
+        console.log("Public evidence now goes to your workspace; your private and app brains stay on this computer. Restart `hm serve` to use it.");
+        break;
+      }
+      const key = await readSecret(`${pos[0]} API key (from ${service.signup})`);
       if (!flag("--no-verify")) {
         try {
-          await verifyExaKey(key);
+          await c.verifyExaKey(key);
         } catch (e) {
           throw new Error(`${pos[0]} rejected the key (${(e as Error).message.slice(0, 120)}); nothing was saved`);
         }
       }
-      const f = writeEnvValue(service.envVar, key);
+      const f = c.writeEnvValue(service.envVar, key);
       getDb();
-      const n = rediscoverAll();
+      const n = c.rediscoverAll();
       console.log(`${pos[0]} connected${flag("--no-verify") ? " (not verified)" : " and verified"}; key saved to ${f} (mode 600). Discovery queued for ${n} people; run the worker to collect.`);
       break;
     }
@@ -187,7 +239,7 @@ async function main() {
       checks.llm_provider = config.llmProvider();
       checks.x_api = config.xBearer() ? "token set" : "not configured (X sources: Access required)";
       checks.exa = config.exaKey() ? "key set" : "not configured (web search: Access required; run `hm connect exa`)";
-      checks.gbrain_remote = remoteConfigured() ? "configured" : "not configured (local brains)";
+      checks.gbrain_remote = remoteConfigured() ? "configured" : "not configured (local brains; to use your workspace: hm connect gbrain)";
       if (remoteConfigured()) {
         try {
           checks.gbrain_remote_tools = (await remoteListTools()).filter((t) => ["put_page", "get_page", "search"].includes(t)).join(",") || "required tools missing";
@@ -235,7 +287,9 @@ async function main() {
   follow <person-id> <goal>  goals: building_with_ai product_decisions research communication market_policy
   cards <person-id>          generate learning cards now
   agent-token                create a read-only token for desktop agents
-  connect exa [--remove]     add your own Exa API key (read from stdin) as a web search source
+  connect exa                add your own Exa API key (stdin) as a web search source
+  connect gbrain [--url U]   use your own hosted GBrain workspace (token from stdin, verified)
+  connect qm --url U         let your own QM deployment use this backend as memory
   export-skill <person-id> [--install user|<project-dir>]
   eval <person-id>           run the 3-arm workflow experiment
   brain-search <person-id> <query>
