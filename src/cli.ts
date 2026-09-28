@@ -134,8 +134,24 @@ async function main() {
       const c = await import("./connect.ts");
       const opt = (f: string) => (flag(f) ? args[args.indexOf(f) + 1] : undefined);
       const readSecret = async (what: string) => {
-        if (process.stdin.isTTY) process.stdout.write(`Paste your ${what} and press Enter: `);
-        const v = ((await Bun.stdin.text()).split("\n")[0] ?? "").trim();
+        const tty = !!process.stdin.isTTY;
+        if (tty) {
+          process.stdout.write(`Paste your ${what} and press Enter (hidden): `);
+          Bun.spawnSync(["stty", "-echo"], { stdin: "inherit" });
+        }
+        let v = "";
+        try {
+          // First line only: works for a paste + Enter and for `echo $TOKEN | hm connect ...`.
+          for await (const line of console) {
+            v = line.trim();
+            break;
+          }
+        } finally {
+          if (tty) {
+            Bun.spawnSync(["stty", "echo"], { stdin: "inherit" });
+            process.stdout.write("\n");
+          }
+        }
         if (!c.validKeyShape(v)) throw new Error("that does not look like a key or token; nothing was saved");
         return v;
       };
