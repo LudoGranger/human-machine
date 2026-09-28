@@ -117,6 +117,7 @@ bun run hm eval garry-tan                       # 3-arm workflow experiment
 | GitHub commits/releases/activity, blogs & newsletters (RSS/Atom), YouTube channel metadata, podcast search (Apple), news headlines (Google News RSS), Open Library, Federal Register | Public feeds/APIs | Free |
 | Analysis: claims, change detection, rules, learning cards, experiments | `ANTHROPIC_API_KEY` **or** Claude Code CLI | Paid per use, or your Claude plan. Daily budget enforced (`HM_LLM_DAILY_BUDGET_USD`) |
 | X posts (polling, filtered stream, edits, deletions) | `X_BEARER_TOKEN` | X API is paid; without it X sources show **Access required** |
+| Open-web search (essays, interviews, talk pages) via Exa | Your own Exa account: `echo $KEY \| bun run hm connect exa` (verified, saved to `~/.human-machine/.env`, mode 600) | Paid per search on your Exa account (one search per person per day); without it the source shows **Access required** |
 | GBrain vector search / reranking | Voyage or OpenAI key configured in GBrain | Paid, optional (not used by default) |
 | Hosted GBrain workspace (shared public-evidence brain, agent collaboration) | `GBRAIN_REMOTE_URL` + `GBRAIN_REMOTE_TOKEN` | Per gbrain.io plan, optional |
 | Always-on server | A small VPS | Your hosting cost, optional |

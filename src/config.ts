@@ -57,6 +57,7 @@ export const config = {
   githubToken: () => env("GITHUB_TOKEN"),
   googleBooksKey: () => env("GOOGLE_BOOKS_API_KEY"),
   youtubeKey: () => env("YOUTUBE_API_KEY"),
+  exaKey: () => env("EXA_API_KEY"),
   // Tests may point fetches at a local fixture server.
   allowPrivateNetwork: () => env("HM_ALLOW_PRIVATE_NETWORK") === "1",
 };
