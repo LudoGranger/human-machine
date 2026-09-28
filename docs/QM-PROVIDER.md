@@ -13,10 +13,10 @@ Read-only clients cannot write; public evidence and a person's attributed rules 
 ## Set up
 
 ```bash
-bun run hm qm-client my-qm --url https://<reachable-human-machine-host>
+bun run hm connect qm --url https://<reachable-human-machine-host>
 ```
 
-This writes four client credentials to `~/.human-machine/qm-client.env` (mode 600) and prints the `MEMORY_PROVIDER_CONFIG` JSON. Put the credentials in QM's secret store as `HM_QM_RO_CLIENT_ID`, `HM_QM_RO_CLIENT_SECRET`, `HM_QM_RW_CLIENT_ID`, `HM_QM_RW_CLIENT_SECRET`, and set `MEMORY_PROVIDER_CONFIG` on the QM deployment. The Human Machine URL must be reachable from QM's servers (not `127.0.0.1` of a laptop) — see docs/DEPLOY.md.
+This (or the lower-level `hm qm-client`) writes four client credentials to `~/.human-machine/qm-client.env` (mode 600) and prints the `MEMORY_PROVIDER_CONFIG` JSON. Put the credentials in QM's secret store as `HM_QM_RO_CLIENT_ID`, `HM_QM_RO_CLIENT_SECRET`, `HM_QM_RW_CLIENT_ID`, `HM_QM_RW_CLIENT_SECRET`, and set `MEMORY_PROVIDER_CONFIG` on the QM deployment. `hm connect qm` prints the exact `qm.config.jsonc` edits; step-by-step guide: [CONNECT.md](CONNECT.md). The Human Machine URL must be reachable from QM's servers (not `127.0.0.1` of a laptop) — see docs/DEPLOY.md.
 
 ## Verified
 
