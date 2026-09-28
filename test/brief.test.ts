@@ -83,7 +83,7 @@ describe("morning brief", () => {
     expect(dueBriefUsers(new Date("2026-09-28T09:00:00.000Z"))).not.toContain("briefuser");
     const next = buildBrief("briefuser", new Date("2026-09-29T08:00:00.000Z"));
     expect(next.quiet).toBe(true);
-  });
+   }, 120_000); // first GBrain write creates a PGLite brain: slow on CI runners
 });
 
 test("agents read the brief through the agent API (read-only token is enough)", async () => {
