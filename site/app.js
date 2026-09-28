@@ -62,7 +62,7 @@
     copyButton.disabled = !hasWork;
     document.querySelector('#preview-prompt').disabled = !hasWork;
     copyStatus.textContent = hasWork ? '' : 'Add a task to build your prompt.';
-    copyButton.querySelector('.copy-label').textContent = 'Copy prompt';
+    copyButton.querySelector('.copy-label').textContent = 'Create skill';
   }
   function toggle(id) { picked.has(id) ? picked.delete(id) : picked.add(id); persist(); update(); }
   function makePerson(h, isCustom = false) {
@@ -118,7 +118,7 @@
     try {
       if (!navigator.clipboard?.writeText) throw new Error('Clipboard unavailable');
       await navigator.clipboard.writeText(copiedPrompt);
-      copyButton.querySelector('.copy-label').textContent = 'Copied';
+      copyButton.querySelector('.copy-label').textContent = 'Copied ✓';
       copyStatus.textContent = 'Copied. Paste into your AI.';
     } catch {
       previewPrompt();
